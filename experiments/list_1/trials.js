@@ -1,11 +1,4 @@
 let trial_obj = [
-    {
-        "stimulus": "stimulus",
-        "speaker": "speaker",
-        "sib_code": "sib_code",
-        "triplet_id": "triplet_id",
-        "lex_code": "lex_code"
-      },
       {
         "stimulus": "audio/246_SN5_high.wav",
         "speaker": "246",
