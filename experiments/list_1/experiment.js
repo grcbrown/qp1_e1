@@ -232,71 +232,72 @@ const questionnaire_2 = {
 };
 timeline.push(questionnaire_2);
 
-// Survey questions
-const survey_json = {
-    elements: [{
-        type: 'html',
-        prompt: "Please answer the following questions:"
-    },
-    {
-        type: 'multi-choice',
-        prompt: 'Did you read the instructions and do you think you did the task correctly?', 
-        name: 'correct', 
-        options: ['Yes', 'No', 'I was confused']
-    },
-    {
-        type: 'drop-down',
-        prompt: 'Gender:',
-        name: 'gender',
-        options: ['Female', 'Male', 'Non-binary/Non-conforming', 'Other']
-    },
-    {
-        type: 'text',
-        prompt: 'Age:',
-        name: 'age',
-        textbox_columns: 10
-    },
-    {
-        type: 'drop-down',
-        prompt: 'Level of education:',
-        name: 'education',
-        options: ['Some high school', 'Graduated high school', 'Some college', 'Graduated college', 'Hold a higher degree']
-    },
-    {
-        type: 'text',
-        prompt: "Native language? (What was the language spoken at home when you were growing up?)",
-        name: 'language',
-        textbox_columns: 20
-    },
-    {
-        type: 'drop-down',
-        prompt: 'Where in the U.S. do you live?',
-        name: 'region',
-        options: ['Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI', 'Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT', 'Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV', 'Southwest - AZ, NM, OK, TX', 'West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY']
-    },
-    {
-        type: 'drop-down',
-        prompt: 'Do you think the payment was fair?',
-        name: 'payment',
-        options: ['The payment was too low', 'The payment was fair']
-    },
-    {
-        type: 'drop-down',
-        prompt: 'Did you enjoy the experiment?',
-        name: 'enjoy',
-        options: ['Worse than the average experiment', 'An average experiment', 'Better than the average experiment']
-    },
-    {
-        type: 'text',
-        prompt: "Do you have any other comments about this experiment?",
-        name: 'comments',
-        textbox_columns: 30,
-        textbox_rows: 4
-    }]
-};
+//Survey
 const questionnaire = {
     type: jsPsychSurvey,
-    survey_json: survey_json,
+    pages: [
+        [
+            {
+                type: 'html',
+                prompt: "Please answer the following questions:"
+            },
+            {
+                type: 'multi-choice',
+                prompt: 'Did you read the instructions and do you think you did the task correctly?', 
+                name: 'correct', 
+                options: ['Yes', 'No', 'I was confused']
+            },
+            {
+                type: 'drop-down',
+                prompt: 'Gender:',
+                name: 'gender',
+                options: ['Female', 'Male', 'Non-binary/Non-conforming', 'Other']
+            },
+            {
+                type: 'text',
+                prompt: 'Age:',
+                name: 'age',
+                textbox_columns: 10
+            },
+            {
+                type: 'drop-down',
+                prompt: 'Level of education:',
+                name: 'education',
+                options: ['Some high school', 'Graduated high school', 'Some college', 'Graduated college', 'Hold a higher degree']
+            },
+            {
+                type: 'text',
+                prompt: "Native language? (What was the language spoken at home when you were growing up?)",
+                name: 'language',
+                textbox_columns: 20
+            },
+            {
+                type: 'drop-down',
+                prompt: 'Where in the U.S. do you live?',
+                name: 'region',
+                options: ['Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI', 'Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT', 'Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV', 'Southwest - AZ, NM, OK, TX', 'West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY']
+            },
+            {
+                type: 'drop-down',
+                prompt: 'Do you think the payment was fair?',
+                name: 'payment',
+                options: ['The payment was too low', 'The payment was fair']
+            },
+            {
+                type: 'drop-down',
+                prompt: 'Did you enjoy the experiment?',
+                name: 'enjoy',
+                options: ['Worse than the average experiment', 'An average experiment', 'Better than the average experiment']
+            },
+            {
+                type: 'text',
+                prompt: "Do you have any other comments about this experiment?",
+                name: 'comments',
+                textbox_columns: 30,
+                textbox_rows: 4
+            }
+        ]
+    ],
     on_finish: function(){
         jsPsych.setProgressBar(1); // set progress bar to full.
     }
