@@ -12,7 +12,7 @@ let timeline = []; //Empty timeline to which we will add trials
 
 //PROGRESS BAR SET UP//
 var count = 0; //this will increase at the end of every trial
-var n_trials = 124; // 1 audio check, 108 listening trials, 13 SRQ, 1 survey q (outside survey plugin) + 1 extra for survey
+var n_trials = 232; // 1 audio check, 108 listening trials, 13 SRQ, 1 survey q (outside survey plugin) + 1 extra for survey
 
 //IRB//
 const irb = {
