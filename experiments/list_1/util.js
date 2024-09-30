@@ -30,15 +30,6 @@ function create_tv_array(json_object) {
     return tv_array;
 }
 
-function stimObject(trial_info) { 
-    obj = {};
-    obj.stimulus = trial_info.stimulus;
-    obj.type = jsPsychHtmlSliderResponse;
-    obj.labels = ["Not at all masculine", "Very masculine"];
-    console.log("Trial Type: "+obj.type)
-    return obj
-}
-
 function shuffle_array(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
