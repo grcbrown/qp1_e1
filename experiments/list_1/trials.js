@@ -1,761 +1,762 @@
 let trial_obj = [
-      {
-        "stimulus": "audio/246_SN5_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN20_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN18_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN19_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN15_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN9_high.wav",
-        "speaker": "246",
-        "sib_code": "high",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN21_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN16_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN4_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN17_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN2_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN10_mid.wav",
-        "speaker": "246",
-        "sib_code": "mid",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN1_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN8_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN3_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN13_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN7_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_SN14_low.wav",
-        "speaker": "246",
-        "sib_code": "low",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN5_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN20_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN18_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN19_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN15_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN9_high.wav",
-        "speaker": "340",
-        "sib_code": "high",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN21_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN16_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN4_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN17_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN2_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN10_mid.wav",
-        "speaker": "340",
-        "sib_code": "mid",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN1_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN8_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN3_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN13_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN7_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_SN14_low.wav",
-        "speaker": "340",
-        "sib_code": "low",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN5_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN20_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN18_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN19_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN15_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN9_high.wav",
-        "speaker": "723",
-        "sib_code": "high",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN21_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN16_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN4_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN17_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN2_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN10_mid.wav",
-        "speaker": "723",
-        "sib_code": "mid",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN1_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN8_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN3_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN13_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN7_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_SN14_low.wav",
-        "speaker": "723",
-        "sib_code": "low",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN1.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN2.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN3.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN4.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN5.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN7.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN8.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN9.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN10.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN13.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN14.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN15.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN16.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN17.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN18.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN19.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN20.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/246_CN21.wav",
-        "speaker": "246",
-        "sib_code": "control",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN1.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN2.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN3.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN4.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN5.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN7.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN8.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN9.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN10.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN13.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN14.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN15.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN16.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN17.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN18.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN19.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN20.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/340_CN21.wav",
-        "speaker": "340",
-        "sib_code": "control",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN1.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "1",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN2.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "2",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN3.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "3",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN4.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "4",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN5.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "5",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN7.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "7",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN8.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "8",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN9.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "9",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN10.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "10",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN13.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "13",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN14.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "14",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN15.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "15",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN16.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "16",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN17.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "17",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN18.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "18",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN19.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "19",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN20.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "20",
-        "lex_code": "neutral"
-      },
-      {
-        "stimulus": "audio/723_CN21.wav",
-        "speaker": "723",
-        "sib_code": "control",
-        "triplet_id": "21",
-        "lex_code": "neutral"
-      }
-]
+  {
+    "stimulus": "audio/246_SN1_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN1_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN1_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN1.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN1.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN1.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "1",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN2_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN2_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN2_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN2.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN2.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN2.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "2",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN3_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN3_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN3_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN3.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN3.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN3.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "3",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN4_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN4_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN4_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN4.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN4.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN4.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "4",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN5_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN5_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN5_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN5.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN5.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN5.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "5",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN7_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN7_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN7_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN7.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN7.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN7.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "7",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN8_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN8_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN8_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN8.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN8.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN8.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "8",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN9_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN9_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN9_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN9.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN9.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN9.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "9",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN10_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN10_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN10_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN10.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN10.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN10.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "10",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN13_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN13_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN13_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN13.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN13.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN13.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "13",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN14_low.wav",
+    "speaker": "246",
+    "sib_code": "low",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN14_low.wav",
+    "speaker": "340",
+    "sib_code": "low",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN14_low.wav",
+    "speaker": "723",
+    "sib_code": "low",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN14.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN14.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN14.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "14",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN15_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN15_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN15_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN15.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN15.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN15.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "15",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN16_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN16_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN16_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN16.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN16.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN16.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "16",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN17_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN17_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN17_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN17.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN17.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN17.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "17",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN18_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN18_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN18_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN18.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN18.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN18.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "18",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN19_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN19_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN19_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN19.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN19.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN19.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "19",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN20_high.wav",
+    "speaker": "246",
+    "sib_code": "high",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN20_high.wav",
+    "speaker": "340",
+    "sib_code": "high",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN20_high.wav",
+    "speaker": "723",
+    "sib_code": "high",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN20.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN20.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN20.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "20",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_SN21_mid.wav",
+    "speaker": "246",
+    "sib_code": "mid",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_SN21_mid.wav",
+    "speaker": "340",
+    "sib_code": "mid",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_SN21_mid.wav",
+    "speaker": "723",
+    "sib_code": "mid",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/246_CN21.wav",
+    "speaker": "246",
+    "sib_code": "control",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/340_CN21.wav",
+    "speaker": "340",
+    "sib_code": "control",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  },
+  {
+    "stimulus": "audio/723_CN21.wav",
+    "speaker": "723",
+    "sib_code": "control",
+    "triplet_id": "21",
+    "lex_code": "neutral"
+  }
+];
+
 
 let gender_objects = [
     {
