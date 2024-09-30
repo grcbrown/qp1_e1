@@ -1,9 +1,3 @@
-//const preload_array = ["audio/246_SN5_high.wav","audio/246_SN20_high.wav","audio/246_SN18_high.wav","audio/246_SN19_high.wav","audio/246_SN15_high.wav","audio/246_SN9_high.wav","audio/246_SN21_mid.wav","audio/246_SN16_mid.wav","audio/246_SN4_mid.wav","audio/246_SN17_mid.wav","audio/246_SN2_mid.wav","audio/246_SN10_mid.wav","audio/246_SN1_low.wav","audio/246_SN8_low.wav","audio/246_SN3_low.wav","audio/246_SN13_low.wav","audio/246_SN7_low.wav","audio/246_SN14_low.wav","audio/340_SN5_high.wav","audio/340_SN20_high.wav","audio/340_SN18_high.wav","audio/340_SN19_high.wav","audio/340_SN15_high.wav","audio/340_SN9_high.wav","audio/340_SN21_mid.wav","audio/340_SN16_mid.wav","audio/340_SN4_mid.wav","audio/340_SN17_mid.wav","audio/340_SN2_mid.wav","audio/340_SN10_mid.wav","audio/340_SN1_low.wav","audio/340_SN8_low.wav","audio/340_SN3_low.wav","audio/340_SN13_low.wav","audio/340_SN7_low.wav","audio/340_SN14_low.wav","audio/723_SN5_high.wav","audio/723_SN20_high.wav","audio/723_SN18_high.wav","audio/723_SN19_high.wav","audio/723_SN15_high.wav","audio/723_SN9_high.wav","audio/723_SN21_mid.wav","audio/723_SN16_mid.wav","audio/723_SN4_mid.wav","audio/723_SN17_mid.wav","audio/723_SN2_mid.wav","audio/723_SN10_mid.wav","audio/723_SN1_low.wav","audio/723_SN8_low.wav","audio/723_SN3_low.wav","audio/723_SN13_low.wav","audio/723_SN7_low.wav","audio/723_SN14_low.wav","audio/246_CN1.wav","audio/246_CN2.wav","audio/246_CN3.wav","audio/246_CN4.wav","audio/246_CN5.wav","audio/246_CN7.wav","audio/246_CN8.wav","audio/246_CN9.wav","audio/246_CN10.wav","audio/246_CN13.wav","audio/246_CN14.wav","audio/246_CN15.wav","audio/246_CN16.wav","audio/246_CN17.wav","audio/246_CN18.wav","audio/246_CN19.wav","audio/246_CN20.wav","audio/246_CN21.wav","audio/340_CN1.wav","audio/340_CN2.wav","audio/340_CN3.wav","audio/340_CN4.wav","audio/340_CN5.wav","audio/340_CN7.wav","audio/340_CN8.wav","audio/340_CN9.wav","audio/340_CN10.wav","audio/340_CN13.wav","audio/340_CN14.wav","audio/340_CN15.wav","audio/340_CN16.wav","audio/340_CN17.wav","audio/340_CN18.wav","audio/340_CN19.wav","audio/340_CN20.wav","audio/340_CN21.wav","audio/723_CN1.wav","audio/723_CN2.wav","audio/723_CN3.wav","audio/723_CN4.wav","audio/723_CN5.wav","audio/723_CN7.wav","audio/723_CN8.wav","audio/723_CN9.wav","audio/723_CN10.wav","audio/723_CN13.wav","audio/723_CN14.wav","audio/723_CN15.wav","audio/723_CN16.wav","audio/723_CN17.wav","audio/723_CN18.wav","audio/723_CN19.wav","audio/723_CN20.wav","audio/723_CN21.wav","audio/gift.wav"];
-//var preload = {
-//    type: 'preload',
-//    audio: preload_array
-//}
-
 const jsPsych = initJsPsych({
     show_progress_bar: true,
     override_safe_mode: true,
@@ -15,6 +9,10 @@ const jsPsych = initJsPsych({
   });
 
 let timeline = []; //Empty timeline to which we will add trials
+
+//PROGRESS BAR SET UP//
+var count = 0; //this will increase at the end of every trial
+var n_trials = 124; // 1 audio check, 108 listening trials, 13 SRQ, 1 survey q (outside survey plugin) + 1 extra for survey
 
 //IRB//
 const irb = {
@@ -56,11 +54,15 @@ const audio_check = {
     response_ends_trial: true,
     trial_duration: 20000,
     on_finish: function(data) {
+        count++;
+        var progress = count/n_trials;
+        jsPsych.setProgressBar((progress));
         if (data.response == 2) {
             data.result = "correct"
-        } else{}
+        } else{
             data.result = "incorrect"
         }
+    }    
 };
 
 var feedback = {
@@ -91,7 +93,6 @@ timeline.push(instructions);
 
 //define all trial lengths + arrays
 let stim_array = create_tv_array(trial_obj);
-let gender_array = create_tv_array(gender_objects);
 
 const audio_trials = {
     timeline: [
@@ -116,7 +117,9 @@ const audio_trials = {
                 lex_code: jsPsych.timelineVariable('lex_code')
             },
             on_finish: function(data) {
-                jsPsych.setProgressBar((data.trial_index - 1) / (timeline.length + gender_array.length + stim_array.length));
+                count++;
+                var progress = count/n_trials;
+                jsPsych.setProgressBar((progress));
             }
         },
         {
@@ -167,7 +170,7 @@ const instructions_SRQ = {
 timeline.push(instructions_SRQ);
 
 // SRQ
-//let gender_array = create_tv_array(gender_objects);
+let gender_array = create_tv_array(gender_objects);
 const gender_ideology = {
     timeline: [
         {
@@ -185,7 +188,9 @@ const gender_ideology = {
                 coding: jsPsych.timelineVariable('coding')
             },
             on_finish: function(data) {
-                jsPsych.setProgressBar((data.trial_index - 1) / (timeline.length + gender_array.length + stim_array.length));
+                count++;
+                var progress = count/n_trials;
+                jsPsych.setProgressBar((progress));
             }
         }
     ],
@@ -216,7 +221,12 @@ const questionnaire_2 = {
           "Moderate", 
           "Somewhat Conservative", 
           "Very Conservative"
-        ]
+        ],
+        on_finish: function(data) {
+            count++;
+            var progress = count/n_trials;
+            jsPsych.setProgressBar((progress));
+        }
       }
     ]
 };
@@ -225,67 +235,65 @@ timeline.push(questionnaire_2);
 const questionnaire = {
     type: jsPsychSurvey,
     pages: [
-        [
-            {
-                type: 'html',
-                prompt: "Please answer the following questions:"
-            },
-            {
-                type: 'multi-choice',
-                prompt: 'Did you read the instructions and do you think you did the task correctly?', 
-                name: 'correct', 
-                options: ['Yes', 'No', 'I was confused']
-            },
-            {
-                type: 'drop-down',
-                prompt: 'Gender:',
-                name: 'gender',
-                options: ['Female', 'Male', 'Non-binary/Non-conforming', 'Other']
-            },
-            {
-                type: 'text',
-                prompt: 'Age:',
-                name: 'age',
-                textbox_columns: 10
-            },
-            {
-                type: 'drop-down',
-                prompt: 'Level of education:',
-                name: 'education',
-                options: ['Some high school', 'Graduated high school', 'Some college', 'Graduated college', 'Hold a higher degree']
-            },
-            {
-                type: 'text',
-                prompt: "Native language? (What was the language spoken at home when you were growing up?)",
-                name: 'language',
-                textbox_columns: 20
-            },
-            {
-                type: 'drop-down',
-                prompt: 'Where in the U.S. do you live?',
-                name: 'region',
-                options: ['Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI', 'Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT', 'Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV', 'Southwest - AZ, NM, OK, TX', 'West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY']
-            },
-            {
-                type: 'drop-down',
-                prompt: 'Do you think the payment was fair?',
-                name: 'payment',
-                options: ['The payment was too low', 'The payment was fair']
-            },
-            {
-                type: 'drop-down',
-                prompt: 'Did you enjoy the experiment?',
-                name: 'enjoy',
-                options: ['Worse than the average experiment', 'An average experiment', 'Better than the average experiment']
-            },
-            {
-                type: 'text',
-                prompt: "Do you have any other comments about this experiment?",
-                name: 'comments',
-                textbox_columns: 30,
-                textbox_rows: 4
-            }
-        ]
+        {
+            type: 'html',
+            prompt: "Please answer the following questions:"
+        },
+        {
+            type: 'multi-choice',
+            prompt: 'Did you read the instructions and do you think you did the task correctly?', 
+            name: 'correct', 
+            options: ['Yes', 'No', 'I was confused']
+        },
+        {
+            type: 'drop-down',
+            prompt: 'Gender:',
+            name: 'gender',
+            options: ['Female', 'Male', 'Non-binary/Non-conforming', 'Other']
+        },
+        {
+            type: 'text',
+            prompt: 'Age:',
+            name: 'age',
+            textbox_columns: 10
+        },
+        {
+            type: 'drop-down',
+            prompt: 'Level of education:',
+            name: 'education',
+            options: ['Some high school', 'Graduated high school', 'Some college', 'Graduated college', 'Hold a higher degree']
+        },
+        {
+            type: 'text',
+            prompt: "Native language? (What was the language spoken at home when you were growing up?)",
+            name: 'language',
+            textbox_columns: 20
+        },
+        {
+            type: 'drop-down',
+            prompt: 'Where in the U.S. do you live?',
+            name: 'region',
+            options: ['Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI', 'Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT', 'Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV', 'Southwest - AZ, NM, OK, TX', 'West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY']
+        },
+        {
+            type: 'drop-down',
+            prompt: 'Do you think the payment was fair?',
+            name: 'payment',
+            options: ['The payment was too low', 'The payment was fair']
+        },
+        {
+            type: 'drop-down',
+            prompt: 'Did you enjoy the experiment?',
+            name: 'enjoy',
+            options: ['Worse than the average experiment', 'An average experiment', 'Better than the average experiment']
+        },
+        {
+            type: 'text',
+            prompt: "Do you have any other comments about this experiment?",
+            name: 'comments',
+            textbox_columns: 30,
+            textbox_rows: 4
+        }
     ],
     on_finish: function(){
         jsPsych.setProgressBar(1); // set progress bar to full.
