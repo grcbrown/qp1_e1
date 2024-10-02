@@ -155,7 +155,6 @@ const audio_trials = {
             return order.map(function(x){return x.trial_num});
         }
     }
-    //randomize_order: true
 };
 timeline.push(audio_trials);
 
