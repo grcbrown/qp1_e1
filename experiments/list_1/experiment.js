@@ -84,7 +84,7 @@ timeline.push(audio_check,feedback);
 //INSTRUCTIONS//
 const instructions = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p><font size='3'>In this experiment, you will listen to a series of sentences, produced by different speakers. While listening to each sentence, you will be prompted to rate the social characteristics of its speaker. To rate the social characteristics of a speaker, click along the scale that appears on your screen. You may click along this scale at any point during the trial, but you will not be able to change your response once you make your initial selection. Try to respond as quickly as you can. If you do not respond within ten seconds, the experiment will advance automatically. There will be a progress bar at the top of the screen. When you're ready to hear the first speaker, click ‘Start’. </font></p>",
+    stimulus: "<p><font size='3'>In this experiment, you will listen to a series of sentences, produced by different speakers. While listening to each sentence, you will be prompted to rate the social characteristics of its speaker. To rate the social characteristics of a speaker, click along the scale that appears on your screen. You may click along this scale after the speaker stops talking. Try to respond as quickly as you can. If you do not respond within ten seconds, the experiment will advance automatically. There will be a progress bar at the top of the screen. When you're ready to hear the first speaker, click ‘Start’. </font></p>",
     choices: ['Start']
 };
 
@@ -101,7 +101,7 @@ const audio_trials = {
             stimulus: jsPsych.timelineVariable('stimulus'),
             labels: ['Not at all masculine', 'Extremely masculine'],
             prompt: '<p>How masculine is the speaker of this sentence?</p>',
-            response_allowed_while_playing: true,
+            response_allowed_while_playing: false,
             response_ends_trial: true,
             require_movement: true,
             slider_width: 500,

@@ -4,33 +4,41 @@ library(lmerTest)
 library(ggplot2)
 library(MuMIn)
 
-setwd("your_wd_here")
+setwd("/Users/gracebrown/qp1_exp1/qp1_e1")
 
 # color-blind-friendly palette
 cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") 
 theme_set(theme_bw())
 
 # LOAD DATA
-lex <- read.csv('./data/masc_lex-merged.csv')
+lex <- read.csv('./data/exp_1-merged.csv')
 
 # DATA SHAPING
-## remove participants according to exclusion criteria 
-accuracy_by_participant <- lex %>% filter(!is.na(correct)) %>% group_by(participant_id,condition) %>% filter(accuracy == "correct") %>% count(accuracy)
-exclude <- filter(accuracy_by_participant, n<6)
-print(exclude$participant_id)
-lex <- lex[!(lex$participant_id %in% c(9,13,14,25,32,40,44,52,55,58,62,67,70,72,78,95,97,110,111,113,126,130,133,145,150,151,158,159)),]
+## remove participants according to exclusion criteria
+## (1) Audio attention check
+exclude_audio <- data %>% filter(trial_type == "audio-button-response") %>% group_by(workerid) %>% filter(response != 2) 
+print(exclude_audio$workerid)
+#data <- data[!(data$workerid %in% c(#,#,#)),]
+## (2) - responded to less than 85% of trials 
+trial_num <- 108 #108 total trials (54 sib + 54 control)
+exclude_trial <- data %>% filter(!is.na(rt)) %>% filter(trial_type == "audio-slider-response") %>% group_by(workerid) %>% count(workerid)
+exclude2 <- exclude_trial %>% filter(n/trial_num > 0.85)
+print(exclude2$workerid)
+#data <- data[!(data$workerid %in% c(449, 473, 478, 505, 512, 533, 545)),]
+n_distinct(data$workerid)
+
 
 ## separate numeric and string data
-lex$response_numeric <- ifelse(lex$trial_type=="html-vas-response", lex$response, NA)
-lex$response_numeric <- as.double(lex$response_numeric)
+data$response_numeric <- ifelse(data$trial_type=="audio-slider-response" | data$trial_type=="html-slider-response", data$response, NA)
+data$response_numeric <- as.double(data$response_numeric)
 
 ## unpack demographic data
-lex$response_survey <- ifelse(lex$trial_type=="survey", lex$response, NA)
-survey_results <- lex %>% filter(!is.na(response_survey) == TRUE) %>% group_by(participant_id)
-#lex$response_survey <- gsub("'", '"', lex$response_survey)
-#demo <- lex %>% filter(!is.na(response_survey))
+data$response_survey <- ifelse(data$trial_type=="survey", data$response, NA)
+survey_results <- data %>% filter(!is.na(response_survey) == TRUE) %>% group_by(workerid)
+data$response_survey <- gsub("'", '"', data$response_survey)
+demo <- data %>% filter(!is.na(response_survey))
+demo$response_survey <- str_replace(demo$response, ", 'question1': None", "")
 #json_data <- fromJSON(demo$response_survey)
-## error with json - invalid char in json text ("P0_Q0": None,) <- need to remove this 
 
 lex$response_political <- ifelse(lex$trial_type == "survey-likert", lex$response, NA)
 
