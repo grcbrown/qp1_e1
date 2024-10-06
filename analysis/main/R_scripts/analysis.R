@@ -11,61 +11,69 @@ cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00",
 theme_set(theme_bw())
 
 # LOAD DATA
-lex <- read.csv('./data/exp_1-merged.csv')
+raw_data <- read.csv('./data/qp1_experiment_1-merged.csv')
+survey <- read.csv('./data/survey.csv')
+data <- left_join(x=raw_data,y=survey,by="workerid")
 
 # DATA SHAPING
-## remove participants according to exclusion criteria
+## remove participants according to exclusion criteria 
 ## (1) Audio attention check
 exclude_audio <- data %>% filter(trial_type == "audio-button-response") %>% group_by(workerid) %>% filter(response != 2) 
 print(exclude_audio$workerid)
-#data <- data[!(data$workerid %in% c(#,#,#)),]
+data <- data[!(data$workerid %in% c(568, 570)),]
 ## (2) - responded to less than 85% of trials 
 trial_num <- 108 #108 total trials (54 sib + 54 control)
 exclude_trial <- data %>% filter(!is.na(rt)) %>% filter(trial_type == "audio-slider-response") %>% group_by(workerid) %>% count(workerid)
 exclude2 <- exclude_trial %>% filter(n/trial_num > 0.85)
 print(exclude2$workerid)
-#data <- data[!(data$workerid %in% c(449, 473, 478, 505, 512, 533, 545)),]
-n_distinct(data$workerid)
-
+data <- data[!(data$workerid %in% c(571, 573)),]n_distinct(data$workerid)
+total_respondants <- n_distinct(data$workerid)
 
 ## separate numeric and string data
 data$response_numeric <- ifelse(data$trial_type=="audio-slider-response" | data$trial_type=="html-slider-response", data$response, NA)
 data$response_numeric <- as.double(data$response_numeric)
 
 ## unpack demographic data
-data$response_survey <- ifelse(data$trial_type=="survey", data$response, NA)
-survey_results <- data %>% filter(!is.na(response_survey) == TRUE) %>% group_by(workerid)
-data$response_survey <- gsub("'", '"', data$response_survey)
-demo <- data %>% filter(!is.na(response_survey))
-demo$response_survey <- str_replace(demo$response, ", 'question1': None", "")
-#json_data <- fromJSON(demo$response_survey)
-
-lex$response_political <- ifelse(lex$trial_type == "survey-likert", lex$response, NA)
+### gender breakdown 
+gender_summary <- data %>% select(workerid,gender) %>% group_by(gender) %>% reframe("count" = n_distinct(workerid))
+### age breakdown### age breakdowngender_summary
+age_summary <- data %>% filter(!is.na(age)==T) %>% summarize("min_age" = min(age), "mean_age" = mean(age), "max_age" = max(age))
+### region breakdown
+region_summary <- data %>% select(workerid,region) %>% group_by(region) %>% reframe("count" = n_distinct(workerid))
+### education breakdown
+edu_summary <- data %>% select(workerid,education) %>% group_by(education) %>% reframe("count" = n_distinct(workerid))
+### political
+political <- data %>% filter(trial_type == "survey-likert") %>% summarize("workerid" = workerid, "political" = response)
+political$political <- str_replace(political$political, "\\{'Q0': ", "")
+political$political <- str_replace(political$political, "\\}", "")
+political$political %>% na_if("''")
+data <- left_join(x=data,y=political,by="workerid")
+data$political %>% as.integer()
 
 ## calculate SQR score and append it to main df 
-lex$coding[lex$coding == ""] <- NA 
-lex$sqr <- ifelse(lex$trial_type == "html-vas-response" & is.na(lex$coding) == FALSE,
-                       lex$response_numeric, NA)
-lex$gender_trans <- ifelse(lex$trial_type == "html-vas-response" & is.na(lex$coding) == FALSE & lex$coding == "NEGATIVE",
-                           1-lex$sqr, NA)
-lex$gender_link <- ifelse(lex$trial_type == "html-vas-response" & is.na(lex$coding) == FALSE & lex$coding == "POSITIVE",
-                          lex$sqr, NA)
-score_gender_link <- lex %>% filter(!is.na(gender_link)) %>% group_by(participant_id) %>% summarize("score_link" = mean(gender_link))
-lex <- merge(lex, score_gender_link, by = "participant_id", all.x = TRUE)
-score_gender_trans <- lex %>% filter(!is.na(gender_trans)) %>% group_by(participant_id) %>% summarize("score_trans" = mean(gender_trans))
-lex <- merge(lex, score_gender_trans, by = "participant_id", all.x = TRUE)
+data$coding[data$coding == ""] <- NA 
+data$sqr_raw <- ifelse(data$trial_type == "html-slider-response" & is.na(data$coding) == FALSE,
+                       data$response_numeric/100, NA)
+data$gender_trans <- ifelse(data$trial_type == "html-slider-response" & is.na(data$coding) == FALSE & data$coding == "NEGATIVE",
+                            (10000-data$sqr)/100, NA)
+data$gender_link <- ifelse(data$trial_type == "html-slider-response" & is.na(data$coding) == FALSE & data$coding == "POSITIVE",
+                           (data$sqr)/100, NA)
+score_gender_link <- data %>% filter(!is.na(gender_link)) %>% group_by(workerid) %>% summarize("score_link" = mean(gender_link))
+data <- merge(data, score_gender_link, by = "workerid", all.x = TRUE)
+score_gender_trans <- data %>% filter(!is.na(gender_trans)) %>% group_by(workerid) %>% summarize("score_trans" = mean(gender_trans))
+data <- merge(data, score_gender_trans, by = "workerid", all.x = TRUE)
+srq_score <- data %>% group_by(workerid) %>% summarize("score" = mean(score_trans+score_link))
 
 ### summarize numeric data 
-exp_data <- lex %>% 
+exp_data <- data %>% 
   filter(!is.na(response)) %>% 
-  filter(!is.na(triplet_id)) %>%
-  group_by(triplet_id,expected,participant_id,trial_index,condition) %>% 
-  summarize(response_numeric,score_link,score_trans)
+  group_by(spk) %>% 
+  filter(spk == 246 | spk == 340 | spk == 723)
 
 exp_data <- filter(exp_data, is.na(response_numeric)==FALSE)
 #### by expected + triplet_id
-exp_sub_1 <- subset(exp_data, select = -c(trial_index,participant_id)) 
-exp_summary_1 <- summarize(exp_sub_1, "mean"=mean(response_numeric), "var" = var(response_numeric))
+exp_sub_1 <- subset(exp_data, select = -c(trial_index,workerid)) 
+exp_summary_1 <- summarize(exp_sub_1, "mean"=mean(response_numeric/100), "var" = var(response_numeric/100), "sd" = sd(response_numeric/100))
 print(exp_summary_1)
 
 #### by expected + participant 
@@ -74,20 +82,45 @@ exp_summary_2 <- summarize(exp_sub_2, "mean"=mean(response_numeric), "var" = var
 print(exp_summary_2)
 
 # VISUALIZATIONS 
-## overall distribution of ratings 
-hist_by_cond <- ggplot(exp_data,aes(x=response_numeric, fill = expected))+
+## gen distribution of ratings 
+hist_all <- ggplot(exp_data, aes(x=response_numeric)) + 
+  geom_histogram(bins=30) +
+  xlab("Masculinity Rating") + 
+  scale_fill_manual(values = cbPalette) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+print(hist_all)
+ggsave(file="./analysis/main/Graphs/hist_all.pdf",width=7,height=4)
+ggsave(file="./analysis/main/Graphs/hist_all.png",width=,height=4)
+## overall distribution of ratings by speaker
+hist_by_spk <- ggplot(exp_data,aes(x=response_numeric))+
   geom_histogram(bins=30)+
-  facet_grid(.~expected) +
+  facet_grid(.~spk) +
   xlab("Masculinity Rating") +
-  scale_fill_manual(values = cbPalette)
-print(hist_by_cond)
-ggsave(file="./analysis/main_masc_lex/Graphs/hist_by_condition.pdf",width=7,height=4)
-ggsave(file="./analysis/main_masc_lex/Graphs/hist_by_condition.png",width=,height=4)
+  scale_fill_manual(values = cbPalette, name = "Speaker ID")
+print(hist_by_spk)
+ggsave(file="./analysis/main/Graphs/hist_spk.pdf",width=7,height=4)
+ggsave(file="./analysis/main/Graphs/hist_spk.png",width=,height=4)
+## overall distribution of ratings by sib_code
+hist_by_sib <- ggplot(exp_data,aes(x=response_numeric))+
+  geom_histogram(bins=30)+
+  facet_grid(.~sib_code) +
+  xlab("Masculinity Rating")
+print(hist_by_sib)
+ggsave(file="./analysis/main/Graphs/hist_sib.pdf",width=7,height=4)
+ggsave(file="./analysis/main/Graphs/hist_sib.png",width=,height=4)
+## speaker by sib_code
+hist_by_spk_sib <- ggplot(exp_data,aes(x=response_numeric))+
+  geom_histogram(bins=30)+
+  facet_grid(sib_code~spk) +
+  xlab("Masculinity Rating")
+print(hist_by_spk_sib)
+ggsave(file="./analysis/main/Graphs/hist_spk_sib.pdf",width=7,height=4)
+ggsave(file="./analysis/main/Graphs/hist_spk_sib.png",width=,height=4)
 ## faceted by-triplet average ratings 
-hist_by_triplet <- ggplot(exp_data,aes(x=response_numeric))+
+hist_by_trip <- ggplot(exp_data,aes(x=response_numeric))+
   geom_histogram(bins=30)+
   facet_grid(.~triplet_id)
-print(hist_by_triplet) 
+print(hist_by_trip) 
 
 ##barplots
 

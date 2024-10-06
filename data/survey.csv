@@ -1,0 +1,30 @@
+﻿workerid,age,gender,region,education,language
+562,24,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+568,33,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+586,55,Male,"Southwest - AZ, NM, OK, TX",Graduated high school,
+571,24,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+583,22,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+577,49,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+559,51,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+580,36,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+565,41,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+561,,,,,
+582,27,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+558,48,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,english
+564,37,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+576,44,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated high school,english
+579,26,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+567,44,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+570,21,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+585,22,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+573,37,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+584,53,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,english
+563,18,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some high school,english
+581,49,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+560,70,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+557,29,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+569,32,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+566,32,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated high school,English
+578,28,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+575,65,Female,,Some college,english
+572,24,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
