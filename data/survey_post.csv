@@ -1,0 +1,298 @@
+﻿workerid,age,gender,region,education,language
+653,28,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+857,70,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English 
+638,39,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+593,33,Male,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+692,48,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+617,38,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+611,38,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,english
+590,29,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+765,43,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+701,38,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+674,36,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+750,36,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+641,48,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+830,29,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+775,48,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+644,33,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+744,34,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+872,34,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+665,40,Female,,Graduated college,english
+741,32,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+891,35,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,english
+683,55,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+620,41,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+747,48,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+875,29,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated high school,English
+836,53,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+647,47,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+869,64,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+599,23,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+809,59,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+851,66,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+824,66,Female,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+786,65,Female,"Southwest - AZ, NM, OK, TX",Some college,English
+833,47,Other,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+892,35,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+753,45,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,english
+863,69,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+623,38,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+728,26,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+854,38,Male,"Southwest - AZ, NM, OK, TX",Some college,English
+759,44,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+735,18,Male,"Southwest - AZ, NM, OK, TX",Some college,English
+695,43,Non-binary/Non-conforming,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+815,24,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+756,45,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+629,27,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+698,25,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+605,26,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,ENGLISH 
+878,42,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+680,42,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English 
+842,25,Female,"Southwest - AZ, NM, OK, TX",Graduated college,English
+656,55,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+707,37,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+771,49,Female,"Southwest - AZ, NM, OK, TX",Graduated high school,English 
+789,34,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+662,37,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+860,52,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+602,43,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+768,33,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+845,26,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some high school,English
+738,39,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+626,47,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+812,57,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,english
+614,50,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+827,47,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",,english
+713,52,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+719,45,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+803,49,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+710,31,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+608,31,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+848,40,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,ENGLISH
+762,48,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+686,29,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+689,43,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+818,22,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+632,31,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+866,36,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+879,46,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,english
+794,67,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+596,27,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+650,22,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+677,30,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+716,25,Female,"Southwest - AZ, NM, OK, TX",Some college,English
+780,25,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,english
+839,22,Female,"Southwest - AZ, NM, OK, TX",Some college,English
+797,25,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+722,70,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+800,27,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+668,31,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+671,37,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+704,51,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+725,50,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+635,30,Non-binary/Non-conforming,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+885,32,Male,"Southwest - AZ, NM, OK, TX",Graduated college,English
+806,46,Female,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+774,30,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,english
+659,31,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+731,30,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,english
+791,25,Female,"Southwest - AZ, NM, OK, TX",Graduated college,English
+821,39,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+697,32,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,english
+874,49,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+888,22,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+619,24,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English 
+761,25,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,english
+613,21,Non-binary/Non-conforming,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+746,29,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+658,34,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+718,47,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,english
+755,50,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+859,63,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+601,33,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+637,37,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,
+823,29,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,english
+832,47,Male,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+770,69,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+625,25,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated high school,English
+661,58,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+598,18,Male,"Southwest - AZ, NM, OK, TX",Some college,English
+829,53,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+691,55,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+881,63,Female,"Southwest - AZ, NM, OK, TX",Some college,english
+688,46,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,Englidh
+640,32,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English 
+847,44,Female,"Southwest - AZ, NM, OK, TX",Graduated college,english
+835,42,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+703,43,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+679,32,Male,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+607,27,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+862,34,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+682,52,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+758,32,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+673,36,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,english
+694,51,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+820,41,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+793,34,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+799,29,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+767,38,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+628,25,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,Chinese
+740,65,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,english
+715,71,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+655,41,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+610,25,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+850,59,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+773,37,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+811,22,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,english
+724,44,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+737,55,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+664,36,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+700,49,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+652,70,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+805,56,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+826,47,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+782,32,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+712,31,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+883,40,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+631,42,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,english
+868,35,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+764,59,Male,"Southwest - AZ, NM, OK, TX",Some college,English
+877,71,Female,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+634,43,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+796,34,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+777,38,Male,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+817,36,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+802,53,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+749,25,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+871,27,Non-binary/Non-conforming,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+788,24,Female,"Southwest - AZ, NM, OK, TX",Graduated high school,English 
+743,22,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+856,42,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+853,21,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+622,25,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,english
+721,44,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated high school,English
+890,31,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+838,45,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+676,52,Female,"Southwest - AZ, NM, OK, TX",Graduated college,english
+595,51,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+733,33,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,english
+592,35,Non-binary/Non-conforming,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,english
+844,47,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+643,34,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+865,31,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+589,27,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,english
+730,42,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+646,28,Non-binary/Non-conforming,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+886,22,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+727,24,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+649,43,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+667,39,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+604,37,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+706,35,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+779,38,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,english
+790,29,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+670,23,Male,"Southwest - AZ, NM, OK, TX",Graduated college,English
+616,44,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+752,36,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+841,32,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+709,30,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+736,53,Female,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+588,32,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+627,30,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+864,22,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+846,37,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+787,66,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,english
+867,71,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,ENGLISH
+798,33,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+792,50,Female,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+612,46,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+880,64,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+861,34,Female,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+705,36,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,eng
+882,62,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+675,44,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,
+855,62,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+831,62,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+678,33,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+739,58,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,
+819,67,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+609,42,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+813,29,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+630,34,Male,"Southwest - AZ, NM, OK, TX",Some college,English
+825,44,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English 
+828,34,Male,"Southwest - AZ, NM, OK, TX",Graduated college,English
+657,41,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+751,30,Non-binary/Non-conforming,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+624,30,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+795,45,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+606,37,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+591,32,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+621,67,Female,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+669,54,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+810,33,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+884,34,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,english
+720,28,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+618,52,Female,"Southwest - AZ, NM, OK, TX",Graduated college,English
+840,54,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+843,72,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school, English
+876,49,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+645,26,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+781,67,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,english
+687,32,Male,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+748,18,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+660,48,Male,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+726,63,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,English
+654,37,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some high school,English
+723,55,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+639,27,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+873,73,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+693,24,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+858,22,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+776,69,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+714,38,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+690,34,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+834,35,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+804,52,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+807,48,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,english
+699,47,Female,"Southwest - AZ, NM, OK, TX",Graduated college,English
+600,26,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+681,37,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,english
+734,41,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated college,English
+852,29,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+651,33,Female,,Graduated college,english
+745,45,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+717,20,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+889,38,Female,"Southwest - AZ, NM, OK, TX",Some college,English
+849,49,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+772,49,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,enghlish
+636,50,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Some college,English
+778,40,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,english
+702,31,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Hold a higher degree,English
+732,39,Male,"Southwest - AZ, NM, OK, TX",Graduated high school,English
+711,38,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,english
+633,37,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,English
+784,39,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated college,English
+763,46,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+822,25,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Hold a higher degree,englsih
+870,19,Male,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+760,43,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+666,37,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some college,english
+801,73,Male,"Southwest - AZ, NM, OK, TX",Hold a higher degree,English
+663,31,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated college,English
+615,30,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+603,62,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+769,30,Male,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Graduated high school,English
+648,33,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+729,33,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Some college,English
+684,36,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,english
+837,31,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Some college,English
+887,67,Female,"Midwest - IA, IL, IN, KS, MI, MN, MO, ND, NE, OH, SD, WI",Graduated high school,English
+594,39,Male,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Hold a higher degree,English
+742,22,Female,"Southeast - AL, AR, FL, GA, KY, LA, MS, NC, SC, TN, VA, WV",Some high school,English
+672,46,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+766,18,Male,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+754,33,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
+642,39,Female,"West - AK, CA, CO, HI, ID, MT, NV, OR, UT, WA, WY",Graduated college,English
+816,22,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Graduated high school,English
+708,30,Female,"Northeast - CT, DC, DE, MA, MD, ME, NH, NJ, NY, PA, RI, VT",Hold a higher degree,English
