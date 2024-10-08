@@ -72,6 +72,7 @@ data$spk[data$spk == 340] = "neut"
 ### summarize numeric data 
 exp_data <- data %>% 
   filter(!is.na(response)) %>% 
+  filter(trial_type == "audio-slider-response") %>%
   group_by(spk) %>% 
   filter(spk == "non-masc" | spk == "neut" | spk == "masc")
 
@@ -79,14 +80,18 @@ exp_data <- filter(exp_data, is.na(response_numeric)==FALSE)
 
 exp_data$sib_code <- factor(exp_data$sib_code, levels = c("control", "low", "mid", "high"))
 
-#### by expected + triplet_id
+#### by participant 
+by_participant <- exp_data %>% group_by(workerid) %>% summarize("min" = min(response_numeric), "mean" = mean(response_numeric), "max" = max(response_numeric))
+by_participant_spk <- exp_data %>% group_by(workerid, spk) %>% summarize("min" = min(response_numeric), "mean" = mean(response_numeric), "max" = max(response_numeric))
+
+#### by spk
 exp_sub_1 <- subset(exp_data, select = -c(trial_index,workerid)) 
 exp_summary_1 <- summarize(exp_sub_1, "mean"=mean(response_numeric/100), "var" = var(response_numeric/100), "sd" = sd(response_numeric/100))
 print(exp_summary_1)
 
-#### by expected + participant 
-exp_sub_2 <- subset(exp_data, select = -c(trial_index,triplet_id)) 
-exp_summary_2 <- summarize(exp_sub_2, "mean"=mean(response_numeric/100), "var" = var(response_numeric/100))
+#### by spk + sib 
+exp_sub_2 <- subset(exp_data, select = -c(trial_index,triplet_id)) %>% group_by(sib_code, spk)
+exp_summary_2 <- summarize(exp_sub_2, "mean"=mean(response_numeric/100), "var" = var(response_numeric/100), "sd" = sd(response_numeric/100))
 print(exp_summary_2)
 
 # VISUALIZATIONS 
@@ -100,7 +105,7 @@ print(hist_all)
 ggsave(file="./analysis/main/Graphs/hist_all.pdf",width=7,height=4)
 ggsave(file="./analysis/main/Graphs/hist_all.png",width=,height=4)
 ## overall distribution of ratings by speaker
-hist_by_spk <- ggplot(exp_data,aes(x=response_numeric))+
+hist_by_spk <- ggplot(exp_data,aes(x=response_numeric/100))+
   geom_histogram(bins=30)+
   facet_grid(.~spk) +
   xlab("Masculinity Rating") +
@@ -118,7 +123,7 @@ ggsave(file="./analysis/main/Graphs/hist_sib.pdf",width=7,height=4)
 ggsave(file="./analysis/main/Graphs/hist_sib.png",width=,height=4)
 ## speaker by sib_code
 hist_by_spk_sib <- ggplot(exp_data,aes(x=response_numeric/100))+
-  geom_histogram(bins=30)+
+  geom_histogram(bins=20)+
   facet_grid(sib_code~spk) +
   xlab("Masculinity Rating")
 print(hist_by_spk_sib)
@@ -127,7 +132,8 @@ ggsave(file="./analysis/main/Graphs/hist_spk_sib.png",width=,height=4)
 ## faceted by-triplet average ratings 
 hist_by_trip <- ggplot(exp_data,aes(x=response_numeric/100))+
   geom_histogram(bins=30)+
-  facet_grid(.~triplet_id)
+  facet_grid(.~triplet_id) + 
+  xlab("Masculinity Rating")
 print(hist_by_trip) 
 
 ##barplots
@@ -267,6 +273,32 @@ print(bar_spk_sib)
 ggsave(file="./analysis/main/Graphs/bar_spk_sib.pdf",width=8,height=5)
 ggsave(file="./analysis/main/Graphs/bar_spk_sib.png",width=8,height=5)
 
+bar_sib_spk <- ggplot(exp_data_spk_sib, aes(x = spk, y = mean, fill = sib_code)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("Masculinity Rating") +
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette, name = "Sibilant Condition")
+print(bar_sib_spk)
+ggsave(file="./analysis/main/Graphs/bar_sib_spk.pdf",width=8,height=5)
+ggsave(file="./analysis/main/Graphs/bar_sib_spk.png",width=8,height=5)
+
+box_sib_spk <- ggplot(exp_data,aes(x = spk, y = response_numeric/100))+
+  geom_boxplot(aes(fill=sib_code))+ 
+  ylab("Masculinity Rating") +
+  scale_fill_manual("Sibilant Condition", values=cbPalette) 
+print(box_sib_spk)
+ggsave(file="./analysis/main/Graphs/box_sib_spk.pdf",width=6,height=4)
+ggsave(file="./analysis/main/Graphs/box_sib_spk.png",width=6,height=4)
+
+violin_sib_spk <- ggplot(exp_data, aes(x = spk, y = response_numeric/100))+
+  geom_violin(aes(fill=sib_code))+
+  ylab("Masculinity Rating")+
+  scale_fill_manual("Sibilant Condition", values = cbPalette) 
+print(violin_sib_spk)
+
 
 ### SQR 
 gender_link <- ggplot(score_gender_link,aes(score_link))+geom_histogram(bins = 30)
@@ -278,20 +310,33 @@ print(gender_trans)
 ## linear mixed effects model
 exp_data$triplet_id <- as.factor(exp_data$triplet_id)
 exp_data$spk <- as.factor(exp_data$spk)
+exp_data$spk <- relevel(exp_data$spk, ref = "neut")
 exp_data$workerid <- as.factor(exp_data$workerid)
 exp_data$score_link <- as.numeric(exp_data$score_link)
 exp_data$score_trans <- as.numeric(exp_data$score_trans)
-exp_data
+exp_data$sib_code <- relevel(exp_data$sib_code, ref = "control")
+exp_data$political <- as.factor(exp_data$political)
+exp_data$political <- relevel(exp_data$political, ref = "2")
+exp_data$response_numeric <- exp_data$response_numeric/100
 
-
-model_all <- lmer(response_numeric ~ sib_code*spk + (1+expected|workerid) + (1+expected|triplet_id) + (), data = exp_data)
-summary(model_all)
+#maximally descriptive model
+model_all <- lmer(response_numeric ~ sib_code*spk + age + gender + region + education + score_trans + political + (1|workerid), data = exp_data, REML = F)
+summary(model_all) 
 
 r.squaredGLMM(model_all)
 
-## interaction between expected (masc condition) and triplet_id
-exp_data$triplet_id <- relevel(exp_data$triplet_id, ref = "18")
-model_trip <- lmer(response_numeric ~ expected*triplet_id + (1+expected|participant_id) + (1+expected|trial_index), data = exp_data)
-summary(model_trip)
+model_2 <- lmer(response_numeric ~ sib_code*spk + age + gender + region + score_trans + political + (1+spk|workerid), data = exp_data)
+summary(model_2) # failed to converge 
 
-r.squaredGLMM(model_trip)
+model_3 <- lmer(response_numeric ~ sib_code*spk + age + gender + score_trans + political + (1+spk|workerid) + (1+proliferate.condition), data = exp_data)
+summary(model_3) # failed to converge 
+
+model_4 <- lmer(response_numeric ~ sib_code*spk + age + gender + score_trans + (1+spk|workerid) + (1+proliferate.condition), data = exp_data)
+summary(model_4) # failed to converge 
+
+#planned analysis
+model_planned <- lmer(response_numeric ~ sib_code*spk + score_trans + age + (1|workerid), data = exp_data)
+summary(model_planned)
+
+r.squaredGLMM(model_planned)
+
