@@ -3,17 +3,23 @@ library(lme4)
 library(lmerTest)
 library(ggplot2)
 library(MuMIn)
+library(emmeans)
 
 setwd("/Users/gracebrown/qp1_exp1/qp1_e1")
 
 # color-blind-friendly palette
-cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7") 
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442") 
+cbPalette_2 <- c("#0072B2", "#D55E00", "#CC79A7")
 theme_set(theme_bw())
 
 # LOAD DATA
 raw_data <- read.csv('./data/qp1_e1-merged.csv')
 survey <- read.csv('./data/survey_post.csv')
 data <- left_join(x=raw_data,y=survey,by="workerid")
+
+# ad post-hoc phonetic analysis
+phon <- read.csv('./data/phonetic_analysis.csv')
+data <- left_join(x=data,y=phon,by="stimulus")
 
 # DATA SHAPING
 ## remove participants according to exclusion criteria 
@@ -36,8 +42,10 @@ data$response_numeric <- as.double(data$response_numeric)
 ## unpack demographic data
 ### gender breakdown 
 gender_summary <- data %>% select(workerid,gender) %>% group_by(gender) %>% reframe("count" = n_distinct(workerid))
+
+
 ### age breakdown### age breakdowngender_summary
-age_summary <- data %>% filter(!is.na(age)==T) %>% summarize("min_age" = min(age), "mean_age" = mean(age), "max_age" = max(age))
+age_summary <- data %>% filter(!is.na(age)==T) %>% summarize("min_age" = min(age), "mean_age" = mean(age), "max_age" = max(age), "sd_age" = sd(age))
 ### region breakdown
 region_summary <- data %>% select(workerid,region) %>% group_by(region) %>% reframe("count" = n_distinct(workerid))
 ### education breakdown
@@ -65,16 +73,16 @@ data <- merge(data, score_gender_trans, by = "workerid", all.x = TRUE)
 srq_score <- data %>% group_by(workerid) %>% summarize("score" = mean(score_trans+score_link))
 
 ## relable spk
-data$spk[data$spk == 246] = "non-masc"
-data$spk[data$spk == 723] = "masc"
-data$spk[data$spk == 340] = "neut"
+data$spk[data$spk == 246] = "A"
+data$spk[data$spk == 723] = "C"
+data$spk[data$spk == 340] = "B"
 
 ### summarize numeric data 
 exp_data <- data %>% 
   filter(!is.na(response)) %>% 
   filter(trial_type == "audio-slider-response") %>%
   group_by(spk) %>% 
-  filter(spk == "non-masc" | spk == "neut" | spk == "masc")
+  filter(spk == "A" | spk == "B" | spk == "C")
 
 exp_data <- filter(exp_data, is.na(response_numeric)==FALSE)
 
@@ -93,6 +101,11 @@ print(exp_summary_1)
 exp_sub_2 <- subset(exp_data, select = -c(trial_index,triplet_id)) %>% group_by(sib_code, spk)
 exp_summary_2 <- summarize(exp_sub_2, "mean"=mean(response_numeric/100), "var" = var(response_numeric/100), "sd" = sd(response_numeric/100))
 print(exp_summary_2)
+
+#### phonetics by spk 
+phon_spk <- exp_data %>% group_by(spk) %>% summarize("meanHz" = mean(pitAve_Hz), "pitSDHz" = mean(pitSD_Hz),
+                                                     "meanSem" = mean(pitAve_semi), "pitSDSem" = mean(pitSD_semi),
+                                                     "SR" = mean(speech_rate))
 
 # VISUALIZATIONS 
 ## gen distribution of ratings 
@@ -136,6 +149,12 @@ hist_by_trip <- ggplot(exp_data,aes(x=response_numeric/100))+
   xlab("Masculinity Rating")
 print(hist_by_trip) 
 
+## gender trans + masc rating
+gender_plot <- ggplot(exp_data, aes(y = response_numeric/100, x=gender_trans, color = sib_code)) + 
+  geom_point() + 
+  geom_smooth()
+print(gender_plot)
+
 ##barplots
 spk_bar <- exp_data %>%
   group_by(spk) %>%
@@ -154,11 +173,49 @@ bar_spk <- ggplot(spk_bar, aes(y = mean)) +
                     ymax=mean+ic), width=0.4, colour="black", alpha=0.9) + 
   ylab("Masculinity Rating") +
   xlab("Speaker ID") +
-  scale_fill_manual(values = cbPalette)
+  scale_fill_manual(values = cbPalette_2, name = "Speaker")
 print(bar_spk)
 ggsave(file="./analysis/main/Graphs/bar_spk.pdf",width=4,height=4)
 ggsave(file="./analysis/main/Graphs/bar_spk.png",width=4,height=4)
 ### by lexical_triplet
+exp_data_trip <- filter(exp_data) %>%
+  group_by(triplet_id) %>%
+  summarise( 
+    n=n(),
+    mean=mean(response_numeric/100),
+    sd=sd(response_numeric/100)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+bar_all_by_trip <- ggplot(exp_data_trip, aes(x = triplet_id, y = mean)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("Masculinity Rating") +
+  xlab("Sentence Frame") 
+print(bar_all_by_trip)
+
+exp_data_sib_trip <- filter(exp_data) %>%
+  group_by(triplet_id,sib_code) %>%
+  summarise( 
+    n=n(),
+    mean=mean(response_numeric/100),
+    sd=sd(response_numeric/100)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+bar_sib_trip <- ggplot(exp_data_sib_trip, aes(x = triplet_id, y = mean, fill = sib_code)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("Masculinity Rating") +
+  xlab("Sentence Frame") +
+  scale_fill_manual(values = cbPalette, name = "Sibilant Condition")
+print(bar_sib_trip)
+
+## easier to digest
 exp_data_1 <- filter(exp_data, triplet_id < 8) %>%
   group_by(triplet_id,spk) %>%
   summarise( 
@@ -245,7 +302,7 @@ bar_sib <- ggplot(sib_bar, aes(y = mean)) +
                     ymax=mean+ic), width=0.4, colour="black", alpha=0.9) + 
   ylab("Masculinity Rating") +
   xlab("Sibilant Condition") +
-  scale_fill_manual(values = cbPalette)
+  scale_fill_manual(values = cbPalette, name = "Sibilant Condition")
 print(bar_sib)
 ggsave(file="./analysis/main/Graphs/bar_sib.pdf",width=4,height=4)
 ggsave(file="./analysis/main/Graphs/bar_sib.png",width=4,height=4)
@@ -299,6 +356,38 @@ violin_sib_spk <- ggplot(exp_data, aes(x = spk, y = response_numeric/100))+
   scale_fill_manual("Sibilant Condition", values = cbPalette) 
 print(violin_sib_spk)
 
+## pitch included
+smooth_pitch_Hz <- ggplot(exp_data,aes(x = pitAve_Hz, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  scale_fill_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_pitch_Hz)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.png",width=6,height=4)
+
+smooth_pitch_semi <- ggplot(exp_data,aes(x = pitAve_semi, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  scale_fill_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_pitch_semi)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_semi.pdf",width=6,height=4)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_semi.png",width=6,height=4)
+
+smooth_sd_pitch_Hz <- ggplot(exp_data,aes(x = pitSD_Hz, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  scale_fill_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_pitch_Hz)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.png",width=6,height=4)
+
+smooth_sd_pitch_semi <- ggplot(exp_data,aes(x = pitSD_semi, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  scale_fill_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_pitch_semi)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="./analysis/main/Graphs/smooth_pitch_Hz.png",width=6,height=4)
 
 ### SQR 
 gender_link <- ggplot(score_gender_link,aes(score_link))+geom_histogram(bins = 30)
@@ -310,33 +399,76 @@ print(gender_trans)
 ## linear mixed effects model
 exp_data$triplet_id <- as.factor(exp_data$triplet_id)
 exp_data$spk <- as.factor(exp_data$spk)
-exp_data$spk <- relevel(exp_data$spk, ref = "neut")
+exp_data$spk <- relevel(exp_data$spk, ref = "B")
 exp_data$workerid <- as.factor(exp_data$workerid)
 exp_data$score_link <- as.numeric(exp_data$score_link)
 exp_data$score_trans <- as.numeric(exp_data$score_trans)
-exp_data$sib_code <- relevel(exp_data$sib_code, ref = "control")
+exp_data$sib_code <- relevel(exp_data$sib_code, ref = "mid")
 exp_data$political <- as.factor(exp_data$political)
 exp_data$political <- relevel(exp_data$political, ref = "2")
 exp_data$response_numeric <- exp_data$response_numeric/100
 
-#maximally descriptive model
-model_all <- lmer(response_numeric ~ sib_code*spk + age + gender + region + education + score_trans + political + (1|workerid), data = exp_data, REML = F)
-summary(model_all) 
+#maximally descriptive model (DO NOT USE)
+#model_all <- lmer(response_numeric ~ sib_code*spk + age + gender + region + education + political + triplet_id + proliferate.condition + (1|workerid), data = exp_data, REML = F)
+#summary(model_all) 
 
-r.squaredGLMM(model_all)
+#r.squaredGLMM(model_all)
 
-model_2 <- lmer(response_numeric ~ sib_code*spk + age + gender + region + score_trans + political + (1+spk|workerid), data = exp_data)
-summary(model_2) # failed to converge 
+#emmeans(model_all, pairwise ~ sib_code | spk, pbkrtest.limit = 29499)
+#emmeans(model_all, pairwise ~ sib_code, pbkrtest.limit = 29499)
+#emmeans(model_all, pairwise ~ spk, pbkrtest.limit = 29499)
 
-model_3 <- lmer(response_numeric ~ sib_code*spk + age + gender + score_trans + political + (1+spk|workerid) + (1+proliferate.condition), data = exp_data)
-summary(model_3) # failed to converge 
-
-model_4 <- lmer(response_numeric ~ sib_code*spk + age + gender + score_trans + (1+spk|workerid) + (1+proliferate.condition), data = exp_data)
-summary(model_4) # failed to converge 
-
-#planned analysis
-model_planned <- lmer(response_numeric ~ sib_code*spk + score_trans + age + (1|workerid), data = exp_data)
+#planned analysis (unscaled)
+model_planned <- lmer(response_numeric ~ sib_code*spk + spk*score_trans + (1|workerid), data = exp_data, REML = F)
 summary(model_planned)
 
 r.squaredGLMM(model_planned)
+
+emmeans(model_planned, pairwise ~ sib_code | spk, pbkrtest.limit = 29499)
+emmeans(model_planned, pairwise ~ sib_code, pbkrtest.limit = 29499)
+emmeans(model_planned, pairwise ~ spk, pbkrtest.limit = 29499)
+
+#model simple 
+model_simple <- lmer(response_numeric ~ sib_code*spk + (1|workerid) + (1|triplet_id), data = exp_data, REML = F)
+summary(model_simple)
+
+r.squaredGLMM(model_simple)
+
+emmeans(model_simple, pairwise ~ sib_code | spk, pbkrtest.limit = 29499)
+emmeans(model_simple, pairwise ~ sib_code, pbkrtest.limit = 29499)
+emmeans(model_simple, pairwise ~ spk, pbkrtest.limit = 29499)
+
+
+# planned analysis with centered terms
+exp_data$ageC <- exp_data$age - mean(exp_data$age)
+exp_data$score_transC <- exp_data$score_trans - mean(exp_data$score_trans)
+
+model_plannedC <- lmer(response_numeric ~ sib_code*spk + spk*score_transC + spk*ageC + (1|workerid), data = exp_data, REML = F)
+summary(model_plannedC)
+
+r.squaredGLMM(model_plannedC)
+emmeans(model_plannedC, pairwise ~ sib_code | spk, pbkrtest.limit = 29499)
+emmeans(model_plannedC, pairwise ~ sib_code, pbkrtest.limit = 29499)
+emmeans(model_plannedC, pairwise ~ spk, pbkrtest.limit = 29499)
+
+
+
+#### Compare main effect and interaction model
+main_eff <- lmer(response_numeric ~ sib_code + spk + (1|workerid), data = exp_data, REML = F)
+r.squaredGLMM(main_eff)
+anova(main_eff, model_simple)
+
+#### Compare basic interaction with planned analysis
+anova(model_simple,model_plannedC)
+
+#model pitch 
+exp_data$pitAve_semiC <- exp_data$pitAve_semi - mean(exp_data$pitAve_semi)
+model_pitch <- lmer(response_numeric ~ sib_code*spk + pitAve_semiC + (1|workerid) + (1|triplet_id), data = exp_data, REML = F)
+summary(model_pitch)
+
+r.squaredGLMM(model_pitch)
+
+emmeans(model_pitch, pairwise ~ sib_code | spk, pbkrtest.limit = 29499)
+emmeans(model_pitch, pairwise ~ sib_code, pbkrtest.limit = 29499)
+emmeans(model_pitch, pairwise ~ spk, pbkrtest.limit = 29499)
 
