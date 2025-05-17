@@ -17,8 +17,9 @@ var n_trials = 88; // 1 audio check, 72 listening trials, 13 SRQ, 1 survey q (ou
 //IRB//
 const irb = {
     type: jsPsychHtmlButtonResponse,
-    stimulua: `
+    stimulus: `
     <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+        <img src="image/SUSig_2color_Stree_Left.png" alt="Stanford Logo">
         <h3>DESCRIPTION</h3>
         <p>You are invited to participate in a research study. Its general purpose is to understand how people perceive speech. We are interested in how people make use of varying properties of language to infer social information about a speaker. In this study, you will hear spoken sentences, and you will be asked to make simple decisions about the sentences you hear. Following this, you will be asked to complete a short questionnaire, where you will indicate on a sliding scale how much you agree or disagree with a series of statements. You will also be asked to complete an optional demographic survey. </p>
         <h3>TIME INVOLVEMENT</h3> 
