@@ -18,26 +18,28 @@ var n_trials = 88; // 1 audio check, 72 listening trials, 13 SRQ, 1 survey q (ou
 const irb = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-    <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
-        <h3>DESCRIPTION</h3>
-        <p>You are invited to participate in a research study. Its general purpose is to understand how people perceive speech. We are interested in how people make use of varying properties of language to infer social information about a speaker. In this study, you will hear spoken sentences, and you will be asked to make simple decisions about the sentences you hear. Following this, you will be asked to complete a short questionnaire, where you will indicate on a sliding scale how much you agree or disagree with a series of statements. You will also be asked to complete an optional demographic survey. </p>
-        <h3>TIME INVOLVEMENT</h3> 
-        <p>Your participation will take approximately 10 minutes.</p>
-        <h3>RISKS AND BENEFITS</h3>
-        <p> The foreseeable risks associated with this study are minimal. This judgment is based on a large body of experience with the same or similar procedures with people of similar ages, sex, origins, etc. Study data will be stored securely, in compliance with Stanford University standards, minimizing the risk of confidentiality breach. There are no known benefits to you for participating in this study, and we cannot and do not guarantee or promise that you will receive any benefits from this study. You will help us to understand how people perceive spoken language.</p>
-        <h3>PAYMENT</h3> 
-        <p>You will be paid at the posted rate.</p>
-        <h3>PARTICIPANT RIGHTS</h3> 
-        <p>If you have read this form and have decided to participate in this project, please understand your participation is voluntary and you have the right to withdraw your consent or discontinue participation at any time without penalty or loss of benefits to which you are otherwise entitled. The alternative is not to participate. You have the right to refuse to answer particular questions. The results of this research study may be presented at scientific or professional meetings or published in scientific journals. Your individual privacy will be maintained in all published and written data resulting from the study. In accordance with scientific norms, the data from this study may be used or shared with other researchers for future research (after removing personally identifying information) without additional consent from you.</p>
-        <h3>CONTACT INFORMATION</h3>
-        <p>If you have any questions, concerns or complaints about this research study, its procedures, risks and benefits, you should contact the Protocol Director Grace Brown at (616) 498-8188. If you are not satisfied with how this study is being conducted, or if you have any concerns, complaints, or general questions about the research or your rights as a participant, please contact the Stanford Institutional Review Board (IRB) to speak to someone independent of the research team at (650) 723-2480 or toll free at 1-866-680-2906. You can also write to the Stanford IRB, Stanford University, 3000 El Camino Real, Five Palo Alto Square, 4th Floor, Palo Alto, CA 94306 USA.</p> 
-        <h3>WAIVER OF DOCUMENTATION</h3>
-        <p>If you agree to participate in this research, please click the 'Continue' button.</p>
-    </div>
-`,
+        <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+            <img src="./image/SUSig_2color_Stree_Left.png" alt="Stanford Logo" style="max-width: 200px; margin-bottom: 20px;">
+            <h3>DESCRIPTION</h3>
+            <p>You are invited to participate in a research study. Its general purpose is to understand how people perceive speech...</p>
+            <h3>TIME INVOLVEMENT</h3> 
+            <p>Your participation will take approximately 10 minutes.</p>
+            <h3>RISKS AND BENEFITS</h3>
+            <p>The foreseeable risks associated with this study are minimal...</p>
+            <h3>PAYMENT</h3> 
+            <p>You will be paid at the posted rate.</p>
+            <h3>PARTICIPANT RIGHTS</h3> 
+            <p>If you have read this form and have decided to participate in this project, please understand your participation is voluntary...</p>
+            <h3>CONTACT INFORMATION</h3>
+            <p>If you have any questions, concerns or complaints about this research study...</p> 
+            <h3>WAIVER OF DOCUMENTATION</h3>
+            <p>If you agree to participate in this research, please click the 'Continue' button.</p>
+        </div>
+    `,
     choices: ['Continue'],
     margin_vertical: '10px',
 };
+
 
 // push to the timeline
 timeline.push(irb);
