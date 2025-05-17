@@ -40,7 +40,6 @@ const irb = {
     margin_vertical: '10px',
 };
 
-
 // push to the timeline
 timeline.push(irb);
 
