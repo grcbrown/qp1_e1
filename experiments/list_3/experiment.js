@@ -16,9 +16,10 @@ var n_trials = 88; // 1 audio check, 72 listening trials, 13 SRQ, 1 survey q (ou
 
 //IRB//
 const irb = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `
-    <div style="font-size: 18px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+    type: jsPsychImageButtonResponse,
+    stimulus: 'image/SUSig_2color_Stree_Left.png',
+    prompt: `
+    <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
         <h3>DESCRIPTION</h3>
         <p>You are invited to participate in a research study. Its general purpose is to understand how people perceive speech. We are interested in how people make use of varying properties of language to infer social information about a speaker. In this study, you will hear spoken sentences, and you will be asked to make simple decisions about the sentences you hear. Following this, you will be asked to complete a short questionnaire, where you will indicate on a sliding scale how much you agree or disagree with a series of statements. You will also be asked to complete an optional demographic survey. </p>
         <h3>TIME INVOLVEMENT</h3> 
@@ -93,7 +94,12 @@ timeline.unshift(preload_trial);
 const audio_warn = {
     type: jsPsychHtmlButtonResponse,
     choices: ['Start'],
-    stimulus: "<p><font size='3'>This study requires you to listen to audio clips. To ensure you can adequately hear the audio presented in this study, the next page will have an audio attention check. Please wear headphones, and be prepared to adjust the volume on your device if necessary. <br><br> When you are ready to begin the audio attention check, click 'Start'. </font></p>",
+    stimulus: `
+    <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+        <p>This study requires you to listen to audio clips. To ensure you can adequately hear the audio presented in this study, the next page will have an audio attention check. Please wear headphones, and be prepared to adjust the volume on your device if necessary.</p>
+        <p>When you are ready to begin the audio attention check, click 'Start'.</p>
+    </div>
+`,
     response_ends_trial: true,
     trial_duration: 10000
 };
@@ -140,7 +146,11 @@ timeline.push(audio_check,feedback);
 //INSTRUCTIONS//
 const instructions = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p><font size='3'>In this experiment, you will listen to a series of sentences, produced by different speakers. While listening to each sentence, you will be prompted to rate the social characteristics of its speaker. To rate the social characteristics of a speaker, click along the scale that appears on your screen. You may click along this scale after the speaker stops talking. Try to respond as quickly as you can. If you do not respond within ten seconds, the experiment will advance automatically. There will be a progress bar at the top of the screen. When you're ready to hear the first speaker, click ‘Start’. </font></p>",
+    stimulus: `
+    <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+        <p>In this experiment, you will listen to a series of sentences, produced by different speakers. While listening to each sentence, you will be prompted to rate the social characteristics of its speaker. To rate the social characteristics of a speaker, click along the scale that appears on your screen. You may click along this scale after the speaker stops talking. Try to respond as quickly as you can. If you do not respond within ten seconds, the experiment will advance automatically. There will be a progress bar at the top of the screen. When you're ready to hear the first speaker, click ‘Start’.</p>
+    </div>
+`,
     choices: ['Start']
 };
 
@@ -236,7 +246,11 @@ timeline.push(audio_trials);
 //INSTRUCTIONS//
 const instructions_SRQ = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p><font size='3'>You have completed the listening trials. You will now complete a short questionnaire. During the questionnaire, you will see a series of statements alongside a scale. Click along the scale to indicate how much you agree or disagree with the statement. Upon completion of the questionnaire, you will be asked to fill out an optional demographic survey. <br><br>When you're ready to begin the questionnaire, click ‘Continue’.</font></p>",
+    stimulus: `
+        <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+            <p>You have completed the listening trials. You will now complete a short questionnaire. During the questionnaire, you will see a series of statements alongside a scale. Click along the scale to indicate how much you agree or disagree with the statement. Upon completion of the questionnaire, you will be asked to fill out an optional demographic survey. <br><br>When you're ready to begin the questionnaire, click ‘Continue’.</p>
+        </div>
+`,
     choices: ['Continue']
 };
 
@@ -275,7 +289,11 @@ timeline.push(gender_ideology);
 
 const instructions_demo = {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "<p><font size='3'>You have completed the questionnaire. There will now be an optional survey. Please answer the following questions if you feel comfortable doing so. If you do not wish to answer a question, please leave it blank. <br><br>When you're ready to procede, click ‘Continue’.</font></p>",
+    stimulus: `    
+    <div style="font-size: 16px; text-align: center; margin-top: 25px; margin-right: 100px; margin-left: 100px; margin-bottom: 25px;">
+        <p>You have completed the questionnaire. There will now be an optional survey. Please answer the following questions if you feel comfortable doing so. If you do not wish to answer a question, please leave it blank. <br><br>When you're ready to procede, click ‘Continue’.</p>
+    </div>
+`,
     choices: ['Continue']
 };
 
