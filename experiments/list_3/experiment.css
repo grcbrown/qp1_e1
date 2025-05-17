@@ -4,12 +4,9 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    width: 500px;
-    height: 400px;
-    border: 2px solid black;
-    border-radius: 10px;
+    max-width: 1500px;
 }
 
 .option {
-    font-size: 24px;
+    font-size: 3px;
 }
