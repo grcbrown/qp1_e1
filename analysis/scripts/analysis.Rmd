@@ -1,0 +1,1735 @@
+---
+title: "/s/ only data analysis"
+author: "Grace Brown"
+date: "April 16, 2025"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("knitr") # for knitting things
+library("tidyverse")
+library("lme4")
+library("lmerTest")
+library("ggplot2")
+library("MuMIn")
+library("brms") # for bayesian model
+library("emmeans") # for pairwise comparisons
+library("tidybayes") 
+library("broom")
+library("ggeffects")
+library("broom.mixed")
+library("patchwork")  # for figure panels
+
+
+knitr::opts_knit$set(root.dir = "/Users/gracebrown/qp1_2spk")
+
+# color-blind-friendly palette
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442") 
+cbPalette_2 <- c("#0072B2", "#D55E00", "#CC79A7")
+cbPalette_3 <-c("#56B4E9", "#009E73", "#F0E442")
+theme_set(theme_bw())
+```
+
+## Load Data
+
+```{r load}
+### DATA WRANGLING
+## read messy dataset
+df.sibilant <- read_csv("~/qp1_2spk/data/qp1_2spk-merged.csv")
+df.survey <- read_csv("~/qp1_2spk/data/survey.csv")
+df.phon <- read_csv("~/qp1_2spk/data/phonetic_analysis.csv")
+
+# join survey and sibilant
+df.sibilant <- left_join(x = df.sibilant,
+                         y = df.survey,
+                         by = "workerid")
+
+df.sibilant <- left_join(x = df.sibilant,
+                         y = df.phon,
+                         by = "stimulus")
+
+# workerid EXCLUSION BY PRE-REGISTERED CRITERIA
+## (1) audio attention check 
+df.exclude_audio <- df.sibilant %>%  
+  filter(trial_type == "audio-button-response", result == "incorrect") %>% 
+  distinct(workerid)  # Keep only unique worker IDs
+
+df.sibilant <- df.sibilant %>% 
+  anti_join(df.exclude_audio, by = "workerid")
+
+## (2) - responded to less than 85% of trials 
+trial_num <- 72 # 72 total trials (36 sib + 36 control)
+df.exclude_trialnum <- df.sibilant %>% 
+  filter(!is.na(rt), trial_type == "audio-slider-response") %>% 
+  count(workerid) %>% 
+  filter(n / trial_num < 0.85) %>% 
+  distinct(workerid)
+
+df.sibilant <- df.sibilant %>% 
+  anti_join(df.exclude_trialnum, by = "workerid")
+
+# SET SRQ SCORES
+## set blank items in `coding` to NA
+df.sibilant$coding[df.sibilant$coding == ""] <- NA 
+
+## create gender_trans and gender_link srq subscales in dataset 
+df.sibilant$gender_trans <- ifelse(df.sibilant$trial_type == "html-slider-response" & 
+                              is.na(df.sibilant$coding) == FALSE & 
+                              df.sibilant$coding == "NEGATIVE",
+                            as.numeric(df.sibilant$response)/100, NA)
+df.sibilant$gender_link <- ifelse(df.sibilant$trial_type == "html-slider-response" & 
+                             is.na(df.sibilant$coding) == FALSE & 
+                             df.sibilant$coding == "POSITIVE",
+                           (10000 - as.numeric(df.sibilant$response))/100, NA)
+
+## calculate gender_trans and gender_link scores, merge with df.sibilant 
+score_gender_link <- df.sibilant %>% 
+  filter(!is.na(gender_link)) %>% 
+  group_by(workerid) %>% 
+  summarize("score_link" = sum(gender_link))
+df.sibilant <- merge(df.sibilant, score_gender_link, by = "workerid", all.x = TRUE)
+score_gender_trans <- df.sibilant %>% 
+  filter(!is.na(gender_trans)) %>% 
+  group_by(workerid) %>% 
+  summarize("score_trans" = sum(gender_trans))
+df.sibilant <- merge(df.sibilant, score_gender_trans, by = "workerid", all.x = TRUE)
+
+## calculate final srq score
+df.sibilant <- df.sibilant %>% mutate("srq_score" = (score_trans+score_link)/13)
+
+# SELECT TRIALS OF INTEREST AND RECODE VARIABLES OF INTEREST
+## relabel speaker from numeric ID to letter ID
+df.sibilant$spk <- recode(df.sibilant$spk, 
+                       `246` = "B", 
+                       `723` = "A") %>%
+  as.factor() # set to factor
+
+### relabel sib conditions
+df.sibilant$sib_code[df.sibilant$sib_code == "low"] = "backed"
+df.sibilant$sib_code[df.sibilant$sib_code == "high"] = "fronted"
+```
+### Create Response-Only Dataframe + New Variables
+
+```{r summarize data}
+### summarize numeric data 
+df.numeric <- df.sibilant %>% 
+  filter(!is.na(response)) %>% 
+  filter(trial_type == "audio-slider-response") %>%
+  group_by(spk) %>% 
+  filter(spk == "A" | spk == "B") 
+
+df.numeric$sib_code <- factor(df.numeric$sib_code, 
+                              levels = c("control", 
+                                         "backed", 
+                                         "mid", 
+                                         "fronted"))
+df.numeric$response <- as.double(df.numeric$response)/10000 # rescale to 0-1 for ZOIB 
+
+# create normalized phonetic variables + pitch range variable
+df.numeric <- df.numeric %>% 
+  group_by(spk) %>% 
+  mutate(NC_norm_mean_f0 = (NC_pitAve_semi - mean(NC_pitAve_semi))/sd(NC_pitAve_semi),
+         NC_norm_SD_f0 = (NC_pitSD_semi - mean(NC_pitSD_semi))/sd(NC_pitSD_semi),
+         NC_norm_max_f0 = (NC_pitMax_semi - mean(NC_pitMax_semi))/sd(NC_pitMax_semi),
+         NC_norm_min_f0 = (NC_pitMin_semi - mean(NC_pitMin_semi))/sd(NC_pitMin_semi),
+         NC_norm_range_f0 = (NC_norm_max_f0 - NC_norm_min_f0), 
+         norm_mean_f0 = (pitAve_semi - mean(pitAve_semi))/sd(pitAve_semi),
+         norm_SD_f0 = (pitSD_semi - mean(pitSD_semi))/sd(pitSD_semi),
+         norm_max_f0 = (pitMax_semi - mean(pitMax_semi))/sd(pitMax_semi),
+         norm_min_f0 = (pitMin_semi - mean(pitMin_semi))/sd(pitMin_semi)) %>%
+  ungroup()
+
+# create centered variables for statistical analysis
+df.numeric <- df.numeric %>% 
+  mutate(srq_scoreC = srq_score - mean(srq_score),
+         ageC = age - mean(age, na.rm = T),
+         NC_norm_mean_f0C = NC_norm_mean_f0 - mean(NC_norm_mean_f0),
+         NC_norm_range_f0C = NC_norm_range_f0 - mean(NC_norm_range_f0),
+         prop_creakC = prop_creak - mean(prop_creak),
+         speech_rateC = speech_rate - mean(speech_rate),
+         s_msC = s_milliseconddur - mean(s_milliseconddur, na.rm = T),
+         f2_rawC = f2_raw - mean(f2_raw, na.rm = T))
+
+df.numeric <- df.numeric %>% 
+  group_by(workerid) %>% 
+  mutate(response = (response - mean(response, na.rm = T))/sd(response, na.rm = T)) %>% ungroup()
+
+#### by participant summaries (SECONDARY OUTLIER CHECKPOINT)
+df.numeric %>% 
+  group_by(workerid) %>% 
+  summarize("min" = min(response), 
+            "mean" = mean(response), 
+            "max" = max(response))
+
+# exclude participants who only responded 0 or 1 for all trials 
+df.exclude_outlier <- df.numeric %>%
+  group_by(workerid) %>%
+  filter(min(response) == 1 | max(response) == 0) %>% 
+  distinct(workerid)  # Keep only unique worker IDs
+
+df.numeric <- df.numeric %>% 
+  anti_join(df.exclude_outlier, by = "workerid")
+
+# exclude no-response gender id's 
+df.exclude_gender <- df.numeric %>%  
+  filter(is.na(gender_corr)) %>% 
+  distinct(workerid)
+
+df.numeric <- df.numeric %>% 
+  anti_join(df.exclude_gender, by = "workerid")
+```
+
+## Basic Summaries
+### Demographic Data
+```{r summaries}
+# Gender Summary
+df.numeric %>% 
+  select(workerid,gender_corr) %>% 
+  group_by(gender_corr) %>% 
+  reframe("count" = n_distinct(workerid))
+
+# Age Summary
+df.numeric %>% 
+  filter(!is.na(age)==T) %>% 
+  summarize("min_age" = min(age), 
+            "mean_age" = mean(age), 
+            "max_age" = max(age), 
+            "sd_age" = sd(age))
+
+# Racial Summary (flor flavor, not part of planned analysis)
+df.numeric %>% 
+  select(workerid,race_corr) %>% 
+  group_by(race_corr) %>% 
+  reframe("count" = n_distinct(workerid))
+
+# Region Summary (for flavor, not part of planned analysis)
+df.numeric %>% 
+  select(workerid,region) %>% 
+  group_by(region) %>% 
+  reframe("count" = n_distinct(workerid))
+
+# Education Summary (for flavor, not part of planned analysis)
+df.numeric %>% 
+  select(workerid,edu) %>% 
+  group_by(edu) %>% 
+  reframe("count" = n_distinct(workerid))
+
+# Political Summary (for flavor, not part of planned analysis) 
+df.numeric %>% 
+  select(workerid,political) %>% 
+  group_by(political) %>% 
+  reframe("count" = n_distinct(workerid))
+```
+
+### By Participant Response Summaries (Secondary Outlier Checkpoint!)
+```{r by_part}
+df.numeric %>% 
+  group_by(workerid, spk) %>% 
+  summarize("min" = min(response), 
+            "mean" = mean(response), 
+            "max" = max(response))
+```
+
+### By Speaker (Ratings)
+```{r by_spk}
+#### by spk
+df.numeric %>% 
+  subset(select = -c(trial_index,
+                     workerid)) %>%
+  group_by(spk) %>%
+  summarize("mean"=mean(response), 
+            "var" = var(response), 
+            "sd" = sd(response))
+```
+
+### By Speaker + Sib (Ratings)
+```{r by_spk_sib}
+#### by spk + sib 
+df.numeric %>% 
+  subset(select = -c(trial_index,
+                     workerid)) %>%
+  group_by(sib_code, spk) %>%
+  summarize("mean"=mean(response), 
+            "var" = var(response), 
+            "sd" = sd(response))
+```
+
+### By Speaker + Sib (+ Gender)
+```{r by_spk_sib}
+#### by spk + sib + gender
+df.numeric %>% 
+  subset(select = -c(trial_index,
+                     workerid)) %>%
+  group_by(sib_code, spk, gender_corr) %>%
+  summarize("mean"=mean(response), 
+            "var" = var(response), 
+            "sd" = sd(response))
+```
+
+### Summary of Phonetic Analyses by Speaker
+```{r by_phon}
+#### phonetics by spk 
+df.numeric %>% 
+  group_by(spk) %>% 
+  summarize("meanHz" = mean(pitAve_Hz), 
+         "pitSDHz" = mean(pitSD_Hz),
+         "meanSem" = mean(pitAve_semi), 
+         "pitSDSem" = mean(pitSD_semi),
+         "SR" = mean(speech_rate),
+         "s_dur" = mean(s_milliseconddur, na.rm = T),
+         "prop_creak" = mean(prop_creak))
+```
+
+## Visualizations
+### General distribution of all ratings
+```{r hist_all, echo=FALSE}
+fig.hist_all <- ggplot(df.numeric, 
+                   aes(x=response)) + 
+  geom_histogram(bins=30) +
+  xlab("Masculinity Rating") + 
+  scale_fill_manual(values = cbPalette) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+ggsave(file="~/qp1_2spk/analysis/figures/hist_all.pdf",width=7,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_all.png",width=,height=4)
+print(fig.hist_all)
+```
+
+### Overall distribution of ratings by speaker
+```{r hist_spk, echo=FALSE}
+fig.hist_by_spk <- ggplot(df.numeric,
+                      aes(x=response))+
+  geom_histogram(bins=30)+
+  facet_grid(.~spk) +
+  xlab("Masculinity Rating") +
+  scale_fill_manual(values = cbPalette, name = "Speaker ID")
+print(fig.hist_by_spk)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_spk.pdf",width=7,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_spk.png",width=,height=4)
+```
+
+### Overall distribution of ratings by sib_code
+```{r hist_by_sib, echo=FALSE}
+fig.hist_by_sib <- ggplot(df.numeric,
+                      aes(x=response))+
+  geom_histogram(bins=30)+
+  facet_grid(.~sib_code) +
+  xlab("Masculinity Rating")
+print(fig.hist_by_sib)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_sib.pdf",width=7,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_sib.png",width=,height=4)
+```
+
+### Overall distribution of ratings by sib_code and speaker
+```{r hist_by_spk_sib, echo=FALSE}
+fig.hist_by_spk_sib <- ggplot(df.numeric,
+                          aes(x=response))+
+  geom_histogram(bins=20)+
+  facet_grid(sib_code~spk) +
+  xlab("Masculinity Rating")
+print(fig.hist_by_spk_sib)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_spk_sib.pdf",width=7,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/hist_spk_sib.png",width=,height=4)
+```
+
+### Ratings by item (and speaker)
+```{r triplet_bar_pretty, echo=FALSE}
+#BY SPEAKERS & ITEM (IN PARTS)
+## items 1-7
+fig.by_item1 <- df.numeric %>% filter(triplet_id < 8) %>%
+ggplot(mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(triplet_id~spk) +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.by_item1)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item1.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item1.png",width=6,height=4)
+
+## items 8-15
+fig.by_item2 <- df.numeric %>% filter(triplet_id > 7 & triplet_id < 16) %>%
+  ggplot(mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(triplet_id~spk) +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.by_item2)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item2.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item2.png",width=6,height=4)
+
+## items 16-21
+fig.by_item3 <- df.numeric %>% filter(triplet_id > 15) %>%
+  ggplot(mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(triplet_id~spk) +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.by_item3)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item3.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_item3.png",width=6,height=4)
+```
+
+### Ratings by speaker
+```{r spk_bar, echo=FALSE}
+## bar graph
+fig.bar_spk <- ggplot(data = df.numeric,
+       mapping = aes(x = spk,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  labs(x = "Speaker ID",
+       y = "Masculinity Rating")
+print(fig.bar_spk)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_spk.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_spk.png",width=8,height=5)
+
+## individual observations
+fig.point_spk <- ggplot(data = df.numeric,
+                        mapping = aes(x = spk,
+                                      y = response)) + 
+  geom_point(alpha = 0.025,
+             position = position_jitter(width = 0.1, height = 0)) + 
+  stat_summary(fun.data = "mean_cl_boot",
+               shape = 21,
+               size = 0.5,
+               color = "black",
+               fill = "lightblue") + 
+  labs(x = "Speaker ID",
+       y = "Masculinity Rating")
+print(fig.point_spk)
+ggsave(file="~/qp1_2spk/analysis/figures/point_spk.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/point_spk.png",width=8,height=5)
+```
+
+### Ratings by sib_code
+```{r sib_bar, echo=FALSE}
+## bar graph
+fig.bar_sib <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  #coord_cartesian(ylim = c(0, 0.55)) +
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.bar_sib)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_sib.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_sib.png",width=8,height=5)
+
+## individual observations
+fig.point_sib <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response)) + 
+  geom_point(alpha = 0.025,
+             position = position_jitter(width = 0.1, height = 0)) + 
+  stat_summary(fun.data = "mean_cl_boot",
+               shape = 21,
+               size = 0.5,
+               color = "black",
+               fill = "lightblue") + 
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.point_sib)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib.png",width=8,height=5)
+```
+
+### Ratings by speaker and sibilant
+```{r spk_sib_bar, echo=FALSE}
+#BY SPEAKERS & SIB CODE
+## bar graph
+fig.bar_sib_spk <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(~spk) +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.bar_sib_spk)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_sib_spk.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_sib_spk.png",width=8,height=5)
+
+## individual observations
+fig.point_sib_spk <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response,
+                     group = spk)) + 
+  geom_point(alpha = 0.025,
+             position = position_jitter(width = 0.1, height = 0)) + 
+  stat_summary(fun.data = "mean_cl_boot",
+               shape = 21,
+               size = 0.5,
+               color = "black",
+               fill = "lightblue") + 
+  facet_grid(~spk) + 
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.point_sib_spk)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib_spk.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib_spk.png",width=8,height=5)
+```
+
+#### By Listener Gender
+```{r}
+fig.by_gender <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(spk~gender_corr) +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating",
+       title = "Observed Masculinity Ratings")
+print(fig.by_gender)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_gender.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_gender.png",width=8,height=5)
+
+## individual observations
+fig.point_by_gender <- ggplot(data = df.numeric,
+       mapping = aes(x = sib_code,
+                     y = response,
+                     group = spk)) + 
+  geom_point(alpha = 0.025,
+             position = position_jitter(width = 0.1, height = 0)) + 
+  stat_summary(fun.data = "mean_cl_boot",
+               shape = 21,
+               size = 0.5,
+               color = "black",
+               fill = "lightblue") + 
+  facet_grid(gender_corr~spk) + 
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating")
+print(fig.point_by_gender)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib_spk.pdf",width=8,height=5)
+ggsave(file="~/qp1_2spk/analysis/figures/point_sib_spk.png",width=8,height=5)
+
+fig.by_gender +  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) + fig.point_by_gender + theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+### SRQ (SAVE AND PRINT THESE)
+```{r srq}
+ggplot(df.numeric, 
+       mapping = aes(y = response, 
+                     x = srq_score)) + 
+  stat_summary(aes(group = spk),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Participant SRQ Score") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red") +
+  scale_color_manual(values = cbPalette_2, name = "Speaker")
+
+ggplot(df.numeric, mapping = aes(y = response, 
+                          x = srq_score)) + 
+  stat_summary(aes(group = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Participant SRQ Score") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(~sib_code) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red")
+
+ggplot(df.numeric, mapping = aes(y = response, 
+                          x = srq_score)) + 
+  stat_summary(aes(group = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .25) +
+  xlab("Participant SRQ Score") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(sib_code~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red") +
+  scale_color_manual(values = cbPalette, name = "Sibilant Condition")
+
+df.numeric$sib_recode <- recode(df.numeric$sib_code, 
+                       `fronted` = "fronted", 
+                       `control` = "other",
+                       `backed` = "other",
+                       `mid` = "other") %>%
+  as.factor()
+
+ggplot(df.numeric, mapping = aes(y = response, 
+                          x = s_msC)) + 
+  stat_summary(aes(group = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .25) +
+  xlab("Participant SRQ Score") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(sib_code~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red") +
+  scale_color_manual(values = cbPalette, name = "Sibilant Condition")
+```
+
+```{r}
+ggplot(df.numeric, 
+       mapping = aes(y = srq_score,
+                     x = gender_corr)) + 
+  geom_violin() + 
+  stat_summary(fun.data = "mean_cl_boot",
+               shape = 21,
+               size = 0.5,
+               color = "black",
+               fill = "lightblue") +
+  ylab("Participant SRQ Score") +
+  xlab("Participant Gender") 
+
+ggplot(df.numeric, 
+       mapping = aes(y = response, 
+                     x = srq_score,
+                     group = gender_corr)) + 
+  stat_summary(fun = "mean",
+               geom = "pointrange",
+               alpha = .2,
+               aes(color = gender_corr)) +
+  xlab("Participant SRQ Score") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(spk~sib_code) +
+  geom_smooth(method = "lm",
+              se = T,
+              aes(color = gender_corr)) +
+  scale_color_manual(values = cbPalette, name = "Gender")
+```
+
+
+### Phonetics
+#### Speaker summaries (Accounting for creak)
+```{r spk_sum}
+exp_data$NC_range_semi <- exp_data$NC_pitMax_semi- exp_data$NC_pitMin_semi
+exp_data$NC_range_Hz <- exp_data$NC_pitMax_Hz - exp_data$NC_pitMin_Hz
+#exp_data$spk <- relevel(exp_data$spk, ref = "A")
+
+df_no_control <- subset.data.frame(exp_data, sib_code != "control")
+#df_no_control$spk <- relevel(df_no_control$spk, ref = "A")
+df_no_control$sib_code <- relevel(df_no_control$sib_code, ref = "backed")
+
+exp_summary_phon <- df_no_control %>% group_by(spk) %>% summarize("avg_f0_Hz"=mean(NC_pitAve_Hz), "avg_f0_semi"=mean(NC_pitAve_semi), "avg_f0_range_Hz" = mean(NC_range_Hz), "avg_f0_range_semi" = mean(NC_range_semi), "s_dur_ms" = mean(s_milliseconddur, na.rm = T), "avg_creak_prop" = mean(prop_creak), "avg_speech_rate" = mean(speech_rate)) 
+
+print(exp_summary_phon)
+
+violin_sib_mean_pitch <- ggplot(df_no_control, aes(x = spk, y = NC_pitAve_semi))+
+  geom_violin(aes(fill=spk))+
+  ylab("Mean F0 (Semitones, rel. 100 Hz)")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(violin_sib_mean_pitch)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_sib_mean_pitch.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_sib_mean_pitch.png",width=6,height=4)
+
+violin_sib_var_pitch <- ggplot(df_no_control, aes(x = spk, y = NC_range_semi))+
+  geom_violin(aes(fill=spk))+
+  ylab("F0 Range (Semitones, rel. 100 Hz)")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(violin_sib_var_pitch)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_sib_var_pitch.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_sib_var_pitch.png",width=6,height=4)
+
+violin_creak <- ggplot(df_no_control, aes(x = spk, y = prop_creak))+
+  geom_violin(aes(fill=spk))+
+  ylab("Proportion of Creak in Utterance")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(violin_creak)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_creak.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/violin_creak.png",width=6,height=4)
+
+box_sib_mean_pitch <- ggplot(df_no_control, aes(x = spk, y = NC_pitAve_semi))+
+  geom_boxplot(aes(fill=spk))+
+  ylab("Mean F0 (Semitones, rel. 100 Hz)")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(box_sib_mean_pitch)
+ggsave(file="~/qp1_2spk/analysis/figures/box_sib_mean_pitch.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/box_sib_mean_pitch.png",width=6,height=4)
+
+box_sib_var_pitch <- ggplot(df_no_control, aes(x = spk, y = NC_range_semi))+
+  geom_boxplot(aes(fill=spk))+
+  ylab("F0 Range (Semitones, rel. 100 Hz)")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(box_sib_var_pitch)
+ggsave(file="~/qp1_2spk/analysis/figures/box_sib_var_pitch.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/box_sib_var_pitch.png",width=6,height=4)
+
+box_creak <- ggplot(df_no_control, aes(x = spk, y = prop_creak))+
+  geom_boxplot(aes(fill=spk))+
+  ylab("Proportion of Creak in Utterance")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(box_creak)
+ggsave(file="~/qp1_2spk/analysis/figures/box_creak.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/box_creak.png",width=6,height=4)
+
+box_rate <- ggplot(df_no_control, aes(x = spk, y = speech_rate))+
+  geom_boxplot(aes(fill=spk))+
+  ylab("Speech Rate (Syllables/Sec)")+
+  xlab("Speaker") +
+  scale_fill_manual(values = cbPalette_2) 
+print(box_rate)
+ggsave(file="~/qp1_2spk/analysis/figures/box_rate.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/box_rate.png",width=6,height=4)
+```
+
+#### Raw pitch measurements 
+
+```{r raw_pitch, echo=FALSE}
+smooth_pitch_Hz <- ggplot(exp_data,aes(x = pitAve_Hz, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Mean Pitch (Hz)") + 
+  scale_color_manual(values=cbPalette, name = "Sibilant Condition") 
+print(smooth_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_pitch_Hz.png",width=6,height=4)
+
+smooth_pitch_semi <- ggplot(exp_data,aes(x = pitAve_semi, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Mean Pitch (semitones)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_pitch_semi.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_pitch_semi.png",width=6,height=4)
+
+smooth_sd_pitch_Hz <- ggplot(exp_data,aes(x = pitSD_Hz, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch SD (Hz)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_pitch_Hz.png",width=6,height=4)
+
+smooth_sd_pitch_semi <- ggplot(exp_data,aes(x = pitSD_semi, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch SD (semitones)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_pitch_semi.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_pitch_semi.png",width=6,height=4)
+
+smooth_range_pitch_Hz <- ggplot(exp_data,aes(x = (pitMax_Hz - pitMin_Hz), y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch Range (Hz)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_range_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_pitch_Hz.png",width=6,height=4)
+
+smooth_range_pitch_semi <- ggplot(exp_data,aes(x = (pitMax_semi - pitMin_semi), y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch Range (semitones)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_range_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_pitch_semi.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_pitch_semi.png",width=6,height=4)
+
+ggplot(df_no_control, aes(y = response_numeric/100, 
+                          x =(norm_max_f0 - norm_min_f0) )) + 
+  stat_summary(aes(group = sib_code,
+                   color = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Pitch Range (semitones)") +
+  ylab("Speaker Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "black") +
+  scale_color_manual(values = cbPalette_3, name = "Sibilant Condition")
+ggsave(file="~/qp1_2spk/analysis/figures/pit_range_point.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/pit_range_point.png",width=6,height=4)
+
+ggplot(df_no_control, aes(y = response_numeric/100, 
+                          x =norm_mean_f0)) + 
+  stat_summary(aes(group = sib_code,
+                   color = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Mean Pitch (Semitones, rel. 100 Hz)") +
+  ylab("Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "black") +
+  scale_color_manual(values = cbPalette_3, name = "Sibilant Condition")
+ggsave(file="~/qp1_2spk/analysis/figures/pit_ave_point.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/pit_ave_point.png",width=6,height=4)
+```
+#### No-creak pitch measurements 
+
+```{r NC_pitch, echo=FALSE}
+fig.smooth_nc_pitch_Hz <- ggplot(df.numeric,
+                             aes(x = NC_pitAve_Hz,
+                                 y = response))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Mean Pitch (Hz) - Creak Excluded") + 
+  scale_color_manual(values=cbPalette, 
+                     name = "Sibilant Condition") 
+print(fig.smooth_nc_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_nc_pitch_Hz.pdf",
+       width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_nc_pitch_Hz.png",
+       width=6,height=4)
+
+fig.point_nc_pitch_Hz <- ggplot(df.numeric, 
+                            aes(x = NC_pitAve_Hz, 
+                                y = response)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", 
+              aes(color = sib_code))
+print(fig.point_nc_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/point_nc_pitch_Hz.pdf",
+       width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/point_nc_pitch_Hz.png",
+       width=6,height=4)
+
+fig.smooth_nc_pitch_semi <- ggplot(df.numeric,
+                               aes(x = NC_pitAve_semi, 
+                                   y = response))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Mean Pitch (semitones) - Creak Excluded") +
+  scale_color_manual("Sibilant Condition", 
+                     values=cbPalette) 
+print(fig.smooth_nc_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_nc_pitch_semi.pdf",
+       width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_nc_pitch_semi.png",
+       width=6,height=4)
+
+fig.point_nc_pitch_semi <- ggplot(df.numeric, 
+                                  aes(x = NC_pitAve_semi, 
+                                      y = response)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", 
+              aes(color = sib_code))
+print(fig.point_nc_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/point_nc_pitch_semi.pdf",
+       width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/point_nc_pitch_semi.png",
+       width=6,height=4)
+
+smooth_sd_nc_pitch_Hz <- ggplot(exp_data,aes(x = NC_pitSD_Hz, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch SD (Hz) - Creak Excluded") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_nc_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_nc_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_nc_pitch_Hz.png",width=6,height=4)
+
+point_sd_nc_pitch_Hz <- ggplot(exp_data, aes(x =NC_pitSD_Hz, y = response_numeric/100)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", aes(color = sib_code))
+print(point_sd_nc_pitch_Hz)
+
+smooth_sd_nc_pitch_semi <- ggplot(exp_data,aes(x = NC_pitSD_semi, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch SD (semitones) - Creak Excluded") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_sd_nc_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_nc_pitch_semi.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_sd_nc_pitch_semi.png",width=6,height=4)
+
+point_sd_nc_pitch_semi <- ggplot(exp_data, aes(x =NC_pitSD_semi, y = response_numeric/100)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", aes(color = sib_code))
+print(point_sd_nc_pitch_semi)
+
+smooth_range_nc_pitch_Hz <- ggplot(exp_data,aes(x = (NC_pitMax_Hz - NC_pitMin_Hz), y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch Range (Hz) - Creak Excluded") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_range_nc_pitch_Hz)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_nc_pitch_Hz.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_nc_pitch_Hz.png",width=6,height=4)
+
+point_range_nc_pitch_Hz <- ggplot(exp_data, aes(x =(NC_pitMax_Hz - NC_pitMin_Hz), y = response_numeric/100)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", aes(color = sib_code))
+print(point_range_nc_pitch_Hz)
+
+smooth_range_nc_pitch_semi <- ggplot(exp_data,aes(x = (NC_pitMax_semi - NC_pitMin_semi), y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Pitch Range (semitones) - Creak Excluded") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(smooth_range_nc_pitch_semi)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_nc_pitch_semi.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_range_nc_pitch_semi.png",width=6,height=4)
+
+point_range_nc_pitch_semi <- ggplot(exp_data, aes(x =(NC_pitMax_semi - NC_pitMin_semi), y = response_numeric/100)) + 
+  geom_point() + 
+  facet_grid(.~sib_code) + 
+  geom_smooth(method = "lm", aes(color = sib_code))
+print(point_range_nc_pitch_semi)
+```
+
+#### Role of creak
+
+At first, it appears like creak plays a large role in predicting masculinity rating, but this perceived effect diminishes when accounting for things like speaker ID and sibilant condition.   
+
+```{r creak_bar, echo=FALSE}
+exp_data_creak <- filter(exp_data) %>%
+  group_by(creak) %>%
+  summarise( 
+    n=n(),
+    mean=mean(response_numeric/100),
+    sd=sd(response_numeric/100)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+bar_all_by_creak <- ggplot(exp_data_creak, aes(x = creak, y = mean)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("Masculinity Rating") +
+  xlab("Creak Present?") 
+ggsave(file="~/qp1_2spk/analysis/figures/bar_all_by_creak.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_all_by_creak.png",width=6,height=4)
+print(bar_all_by_creak)
+
+exp_data_creak_spk <- filter(exp_data) %>%
+  group_by(spk,creak) %>%
+  summarise( 
+    n=n(),
+    mean=mean(response_numeric/100),
+    sd=sd(response_numeric/100)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+bar_by_spk_creak <- ggplot(exp_data_creak_spk, aes(x = spk, y = mean, fill = creak)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("Masculinity Rating") +
+  xlab("Speaker") + 
+  scale_fill_manual(values = c("red","lightgreen"), name = "Creak Present?")
+ggsave(file="~/qp1_2spk/analysis/figures/bar_by_spk_creak.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/bar_by_spk_creak.png",width=6,height=4)
+print(bar_by_spk_creak)
+
+smooth_creak <- ggplot(exp_data,aes(x = prop_creak, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("Proportion of Creak within Utterance") + 
+  scale_color_manual(values=cbPalette, name = "Sibilant Condition") 
+print(smooth_creak)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_creak.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/smooth_creak.png",width=6,height=4)
+
+smooth_creak_point <- ggplot(exp_data, aes(x =prop_creak, y = response_numeric/100)) + 
+  geom_point() + 
+  facet_grid(~spk) +
+  geom_smooth(method = "lm", aes()) + 
+  ylab("Masculinity Rating") +
+  xlab("Proportion of Creak within Utterance")
+print(smooth_creak_point)
+
+df_no_control <- subset.data.frame(exp_data, sib_code != "control")
+df_no_control$spk <- relevel(df_no_control$spk, ref = "A")
+df_no_control$sib_code <- relevel(df_no_control$sib_code, ref = "backed")
+ggplot(df_no_control, aes(y = response_numeric/100, 
+                          x = prop_creak)) + 
+  stat_summary(aes(group = sib_code,
+                   color = sib_code),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Proportion Creak") +
+  ylab("Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "black") +
+  scale_color_manual(values = cbPalette_3, name = "Sibilant Condition")
+ggsave(file="~/qp1_2spk/analysis/figures/prop_creak_point.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/prop_creak_point.png",width=6,height=4)
+
+```
+
+```{r}
+ggplot(df.numeric, mapping = aes(y = response, 
+                          x = prop_creak)) + 
+  stat_summary(aes(group = spk),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .25) +
+  xlab("Proportion of Creak in Utterance") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red") +
+  scale_color_manual(values = cbPalette, name = "Sibilant Condition")
+```
+
+
+#### Sibilant Duration
+
+```{r sib_dur, echo = FALSE}
+sib_dur <- ggplot(exp_data,aes(x = s_milliseconddur, y = response_numeric/100))+
+  geom_smooth(aes(colour=sib_code))+ 
+  ylab("Masculinity Rating") +
+  xlab("/s/ Duration (ms)") +
+  scale_color_manual("Sibilant Condition", values=cbPalette) 
+print(sib_dur)
+ggsave(file="~/qp1_2spk/analysis/figures/sib_dur.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/sib_dur.png",width=6,height=4)
+
+sib_dur_point <- ggplot(exp_data, aes(x =s_milliseconddur, y = response_numeric/100)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", aes(color = sib_code))
+print(sib_dur_point)
+
+exp_data_sdur <- filter(exp_data) %>% filter(!is.na(s_milliseconddur)) %>%
+  group_by(spk) %>%
+  summarise( 
+    n=n(),
+    mean=mean(s_milliseconddur),
+    sd=sd(s_milliseconddur)
+  ) %>%
+  mutate( se=sd/sqrt(n))  %>%
+  mutate( ic=se * qt((1-0.05)/2 + .5, n-1))
+
+bar_by_sdur <- ggplot(exp_data_sdur, aes(x = spk, y = mean)) +
+  stat_summary(fun = mean, geom = "bar", position = position_dodge(width = .9),
+               size = 3) +
+  geom_errorbar(aes(ymin=mean-ic, 
+                    ymax=mean+ic), width=0.3, position = position_dodge(width = .9)) + 
+  ylab("/s/ Duration (ms)") +
+  xlab("Speaker") 
+#ggsave(file="~/qp1_2spk/analysis/figures/bar_by_sdur.pdf",width=6,height=4)
+#ggsave(file="~/qp1_2spk/analysis/figures/bar_by_sdur.png",width=6,height=4)
+print(bar_by_sdur)
+
+sib_dur_box <- ggplot(exp_data, aes(x =spk, y = s_milliseconddur)) + 
+  geom_boxplot() 
+print(sib_dur_box)
+
+
+```
+
+#### Speech Rate
+```{r}
+ggplot(df.numeric, 
+       mapping = aes(y = response, 
+                          x = speech_rate)) + 
+  stat_summary(aes(group = spk),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .25) +
+  xlab("Speech Rate (syllables per sec) of Utterance") +
+  ylab("Mean Masculinity Rating") + 
+  facet_wrap(~spk) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "red") +
+  scale_color_manual(values = cbPalette, name = "Sibilant Condition")
+```
+
+
+#### Raw F2
+```{r f2, echo=FALSE}
+df_no_control <- subset.data.frame(exp_data, sib_code != "control")
+df_no_control$spk <- as.factor(df_no_control$spk)
+df_no_control$spk <- relevel(df_no_control$spk, ref = "A")
+df_no_control$sib_code <- relevel(df_no_control$sib_code, ref = "backed")
+
+box_f2 <- ggplot(df_no_control, aes(x = spk, y = f2_raw))+
+  geom_point(aes(color=spk),
+             position = position_dodge())+
+  ylab("Raw F2")+
+  xlab("Speaker") +
+  facet_wrap(~vowel) +
+  scale_fill_manual(values = cbPalette_2) 
+print(box_f2)
+
+resp_by_f2 <- ggplot(exp_data, aes(x = response_numeric/100, y = f2_raw)) + 
+  geom_point(aes(colour =spk)) + 
+  ylab("Raw F2") +
+  xlab("Speaker Masculinity Rating") + 
+  scale_color_manual(values = cbPalette)
+print(resp_by_f2)
+
+ggplot(df.numeric, 
+       aes(y = response, 
+           x = f2_norm)) + 
+  stat_summary(aes(group = spk,
+                   color = spk),
+               fun = "mean",
+               geom = "pointrange",
+               alpha = .5) +
+  xlab("Raw F2") +
+  ylab("Masculinity Rating") + 
+  facet_wrap(spk~sib_code) +
+  geom_smooth(method = "lm",
+              se = T,
+              color = "black") #+
+  #scale_color_manual(values = cbPalette_3, name = "Sibilant Condition")
+ggsave(file="~/qp1_2spk/analysis/figures/df_no_control.pdf",width=6,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/df_no_control.png",width=6,height=4)
+print(resp_by_f2_v2)
+```
+
+## Modeling
+### Confirm that Linear Model is Inappropriate for Data 
+```{r}
+df.numeric_s <- filter(df.numeric, 
+                       sib_code != "control")
+fit.lmer <- lmer(response ~ sib_code*spk*s_msC*f2_raw +
+                   prop_creakC + 
+                   #speech_rateC + 
+                   NC_norm_mean_f0C + 
+                   NC_norm_range_f0C +
+                   (1 | workerid) + 
+                   (1 | triplet_id), 
+                 data = df.numeric_s,
+                 REML = F)
+summary(fit.lmer)
+
+# Check distributions of residuals - evidence of heterosketasticity
+df.numeric_s %>% 
+  ungroup() %>% 
+  mutate(predicted = predict(fit.lmer, 
+                             newdata = df.numeric_s, 
+                             type = "response", 
+                             re.form = NA),
+         residuals = residuals(fit.lmer)) %>%
+  ggplot(mapping = aes(x = predicted, 
+                       y = residuals)) +
+  geom_point(alpha = 0.05) +
+  geom_smooth(method = "loess", 
+              color = "red") +
+  labs(title = "Residuals vs. fitted values of linear mixed effects model") 
+
+fit.lmer %>% 
+  augment() %>% 
+  ggplot(mapping = aes(sample = scale(.resid))) +
+  geom_qq_line() + 
+  geom_qq() + 
+  labs(title = "QQ Plot")
+
+qqnorm(resid(fit.lmer))
+qqline(resid(fit.lmer), col = "red")
+```
+
+### ZOIB Model using `brm()`
+```{r}
+# build ZOIB model
+l.zoib <- bf(response ~ gender_corr*spk*srq_scoreC +
+               sib_code +
+               spk +
+               sib_code:spk + 
+               srq_scoreC + 
+               gender_corr + 
+               prop_creakC + 
+               speech_rateC + 
+               NC_norm_mean_f0C +
+               NC_norm_mean_f0C + 
+               NC_norm_range_f0C +
+               (1 | workerid) + 
+               (1 | triplet_id),
+             phi ~ gender_corr*spk, 
+             zoi ~ gender_corr*spk,
+             coi ~ gender_corr*spk,
+             family = zero_one_inflated_beta()
+)
+
+# set priors - all weakly informed, default student_t priors for all random eff. (not shown)
+priors <- c(
+  # prior for the response variable 
+  ## main effects
+  prior(normal(-0.7, 0.5), 
+        class = "b", 
+        coef = "spkB"), # Main effect of spkB vs ref
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "sib_codebacked"), # Main effect of backed vs ref
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "sib_codemid"), # Main effect of mid vs ref
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "sib_codefronted"), # Main effect of fronted vs ref
+    prior(normal(0, 0.5),
+        class = "b",
+        coef = "srq_scoreC"), # Main effect of srq score
+    prior(normal(0, 0.5),
+        class = "b",
+        coef = "gender_corrmale"), # Main effect of listener gender (male)
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "gender_corrnc"), # Main effect of listener gender (nc)
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "prop_creakC"), # Main effect of prop_creak
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "NC_norm_mean_f0C"), # Main effect of mean pitch
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "NC_norm_range_f0C"), # Main effect of pitch variability
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "speech_rateC"), # Main effect of speech rate
+  ## interactions 
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "spkB:sib_codebacked"), # spkB:backed interaction
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "spkB:sib_codemid"), # spkB:mid interaction
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "spkB:sib_codefronted"), # spkB:fronted interaction
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrmale:spkB"), # gender_corr:spk interaction term
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrmale:spkB:srq_scoreC"), # gender_corr:spk:srq interaction term
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrmale:srq_scoreC"), # gender_corr:srq interaction term
+  ##
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrnc:spkB"), # gender_corr:spk interaction term
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrnc:spkB:srq_scoreC"), # gender_corr:spk:srq interaction term
+  prior(normal(0, 0.5), 
+        class = "b", 
+        coef = "gender_corrnc:srq_scoreC"), # gender_corr:srq interaction term
+  prior(normal(0, 0.5),
+        class = "b",
+        coef = "spkB:srq_scoreC"),
+  
+  # priors for random effects 
+  prior(student_t(3, 0, 1), 
+        class = "sd", 
+        group = "workerid"), # Random intercept for workerid
+  prior(student_t(3, 0, 1), 
+        class = "sd", 
+        group = "triplet_id"), # Random intercept for triplet_id
+
+  # priors for phi (precision parameter)
+  prior(normal(6, 2), 
+        class = "Intercept", 
+        dpar = "phi"),    # weakly informative, log-phi
+  prior(normal(0,0.5),
+        class = "b",
+        dpar = "phi",
+        coef = "spkB"), # Effect of spkB on phi
+  prior(normal(0,0.5),
+        class = "b",
+        dpar = "phi",
+        coef = "gender_corrmale"), # Effect of gender_corrmale on phi
+  prior(normal(0,0.5),
+        class = "b",
+        dpar = "phi",
+        coef = "gender_corrnc"), # Effect of gender_corrnc on phi
+  prior(normal(0,0.5),
+        class = "b",
+        dpar = "phi",
+        coef = "gender_corrmale:spkB"), # Effect of gender_corrnc:spkB on phi
+  prior(normal(0,0.5),
+        class = "b",
+        dpar = "phi",
+        coef = "gender_corrnc:spkB"), # Effect of gender_corrnc:spkB on phi
+
+  # priors for zero-one inflation parameters
+  prior(normal(-4, 1), 
+        class = "Intercept", 
+        dpar = "zoi"),  # Updated prior for zoi
+  prior(normal(-5, 1), 
+        class = "Intercept", 
+        dpar = "coi"),  # Updated prior for coi
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "zoi", 
+        coef = "spkB"),  # Effect of spkB on zero-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "coi", 
+        coef = "spkB"),  # Effect of spkB on one-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "zoi", 
+        coef = "gender_corrmale"),  # Effect of spkB on zero-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "coi", 
+        coef = "gender_corrmale"),  # Effect of spkB on one-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "zoi", 
+        coef = "gender_corrnc"),  # Effect of spkB on zero-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "coi", 
+        coef = "gender_corrnc"),  # Effect of spkB on one-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "zoi", 
+        coef = "gender_corrmale:spkB"),  # Effect of spkB on zero-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "coi", 
+        coef = "gender_corrmale:spkB"),  # Effect of spkB on one-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "zoi", 
+        coef = "gender_corrnc:spkB"),  # Effect of spkB on zero-inflation
+  prior(normal(0, 0.5), 
+        class = "b", 
+        dpar = "coi", 
+        coef = "gender_corrnc:spkB")  # Effect of spkB on one-inflation
+)
+
+# prior predictive checks (do this before fitting model)
+fit.zoib_prior <- brm(
+  formula = l.zoib,
+  data = df.numeric,         
+  prior = priors,
+  sample_prior = "only",     
+  iter = 8000,
+  warmup = 2000,
+  cores = 4,
+  chains = 8,
+  seed = 327,
+  control = list(adapt_delta = 0.99),
+  file = "brm_zoib_prior")
+```
+
+```{r}
+# INITIAL fit zoib model using brm()
+fit.zoib <- brm(
+  formula = l.zoib,
+  data = df.numeric,
+  prior = priors,
+  iter = 6000,
+  warmup = 2000,
+  cores = 2,
+  chains = 8,
+  file = "brm_zoib_1",
+  init_r = 0.1,
+  control = list(adapt_delta = 0.99),
+  seed = 327,
+)
+
+# LOAD fit zoib model 
+#fit.zoib <- readRDS("~/qp1_2spk/brm_zoib_3rd.rds")
+
+summary(fit.zoib)
+```
+
+
+
+#### Check Bayesian Model Assumptions 
+```{r}
+# check model fit - plot fit 
+plot(fit.zoib) 
+ggsave(file="~/qp1_2spk/analysis/figures/zoib_fit.pdf")
+```
+
+```{r}
+# check model fit - posterior predictive check 
+pp_check(fit.zoib, ndraws = 100)
+ggsave(file="~/qp1_2spk/analysis/figures/pp_check.pdf",
+       width=8,height=4)
+```
+
+```{r}
+# plot observed data
+#print(fig.bar_sib)
+
+# plot posterior predictions 
+fig.bar_sib_post_alt <- df.numeric %>% 
+  add_predicted_draws(object = fit.zoib, # generate predictions from posterior
+                      ndraws = 1) %>% 
+  ggplot(mapping = aes(x = sib_code, 
+                       y = .prediction)) +
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "pink") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating") + 
+  facet_grid(spk~gender_corr)
+
+fig.bar_sib_post <- df.numeric %>% 
+  add_predicted_draws(object = fit.zoib, # generate predictions from posterior
+                      ndraws = 1) %>% 
+  ggplot(mapping = aes(x = sib_code, 
+                       y = .prediction)) +
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "pink") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating",
+       title = "Posterior Masculinity Ratings") + 
+  facet_grid(spk~gender_corr)
+
+ggsave(file="~/qp1_2spk/analysis/figures/s_post_bar.pdf",
+       width=8,height=4)
+
+# plot priors
+fig.bar_sib_prior <- df.numeric %>% 
+  add_predicted_draws(object = fit.zoib_prior, # generate predictions from priors
+                      ndraws = 1) %>%  
+  ggplot(mapping = aes(x = sib_code, 
+                       y = .prediction)) +
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightgreen") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") + 
+  scale_x_discrete(limits = c("control", "backed", "mid", "fronted")) + 
+  labs(title = "Prior distribution of masculinity ratings by /s/ condition",
+       x = "/s/ Condition",
+       y = "Masculinity Rating")
+
+ggsave(file="~/qp1_2spk/analysis/figures/s_prior_bar.pdf",
+       width=8,height=4)
+
+fig.by_gender
+fig.bar_sib_post_alt + fig.bar_sib_post
+```
+
+### Hypothesis Testing
+#### Speaker Differences 
+```{r}
+h1 <- hypothesis(fit.zoib, "Intercept > Intercept + spk B") 
+
+df.test1 <- rbind(data.frame(Hypothesis = "Spk A > Spk B", h1$hypothesis)) %>% 
+  select(-Hypothesis.1)
+
+kable(df.test1)
+```
+
+
+#### /s/ Condition Differences
+```{r}
+fit.zoib %>% 
+  emmeans(specs = pairwise ~ sib_code | spk) %>% 
+  pluck("contrasts") %>% 
+  gather_emmeans_draws() %>% 
+  ggplot(aes(x = .value,
+             y = spk,
+             fill = after_stat(x > 0))) + 
+  facet_wrap(~ contrast) +
+  stat_halfeye(point_interval = mean_hdi,
+               .width = c(0.5, 0.75, 0.95),
+               show.legend = T) + 
+  geom_vline(xintercept = 0, 
+             linetype = 2) + 
+  scale_fill_manual(values = c("gray80", "skyblue")) + 
+  scale_x_continuous(limits = c(-0.15, 0.25)) +
+  labs(title = "Pairwise comparisons of /s/ condition by speaker (single token)",
+       y = "speaker")
+ggsave(file="~/qp1_2spk/analysis/figures/emmeans.pdf", width=8,height=4)
+ggsave(file="~/qp1_2spk/analysis/figures/emmeans.png", width=8,height=4)
+```
+
+```{r}
+sib.h1 <- hypothesis(fit.zoib, "Intercept > Intercept + sib_codefronted") 
+sib.h2 <- hypothesis(fit.zoib, "Intercept + sib_codemid > Intercept + sib_codefronted")
+sib.h3 <- hypothesis(fit.zoib, "Intercept + sib_codebacked > Intercept + sib_codefronted")
+
+df.sib.test <- rbind(data.frame(Hypothesis = "Control > Fronted /s/", 
+                                sib.h1$hypothesis),
+                     data.frame(Hypothesis = "Mid /s/ > Fronted /s/", 
+                                sib.h2$hypothesis),
+                     data.frame(Hypothesis = "Backed /s/ > Fronted /s/", 
+                                sib.h3$hypothesis)) %>% 
+  select(-Hypothesis.1)
+
+kable(df.sib.test)
+```
+
+##### Use if spk:sib_code interaction is in model
+```{r}
+sibA.h1 <- hypothesis(fit.zoib, "Intercept > Intercept + sib_codefronted") 
+sibA.h2 <- hypothesis(fit.zoib, "Intercept + sib_codemid > Intercept + sib_codefronted")
+sibA.h3 <- hypothesis(fit.zoib, "Intercept + sib_codebacked > Intercept + sib_codefronted")
+sibB.h1 <- hypothesis(fit.zoib, "Intercept + spkB > Intercept + spkB + sib_codefronted + spkB:sib_codefronted") 
+sibB.h2 <- hypothesis(fit.zoib, "Intercept + spkB + sib_codemid + spkB:sib_codemid > Intercept + spkB + sib_codefronted + spkB:sib_codefronted")
+sibB.h3 <- hypothesis(fit.zoib, "Intercept + spkB + sib_codebacked + spkB:sib_codebacked > Intercept + spkB + sib_codefronted + spkB:sib_codefronted")
+
+df.sib.test.mult <- rbind(data.frame(Hypothesis = "Spk A: Control > Fronted /s/", 
+                                sibA.h1$hypothesis),
+                     data.frame(Hypothesis = "Spk A: Mid /s/ > Fronted /s/", 
+                                sibA.h2$hypothesis),
+                     data.frame(Hypothesis = "Spk A: Backed /s/ > Fronted /s/", 
+                                sibA.h3$hypothesis),
+                     data.frame(Hypothesis = "Spk B: Control > Fronted /s/", 
+                                sibB.h1$hypothesis),
+                     data.frame(Hypothesis = "Spk B: Mid /s/ > Fronted /s/", 
+                                sibB.h2$hypothesis),
+                     data.frame(Hypothesis = "Spk B: Backed /s/ > Fronted /s/", 
+                                sibB.h3$hypothesis)) %>% 
+  select(-Hypothesis.1)
+
+kable(df.sib.test.mult)
+```
+
+#### Phonetic Effects 
+```{r}
+phon.h1 <- hypothesis(fit.zoib, "prop_creakC > 0") 
+phon.h2 <- hypothesis(fit.zoib, "NC_norm_mean_f0C < 0") 
+phon.h3 <- hypothesis(fit.zoib, "NC_norm_range_f0C < 0") 
+phon.h4 <- hypothesis(fit.zoib, "speech_rateC < 0")
+
+df.phon.test <- rbind(data.frame(Hypothesis = "Creak Effect?", 
+                                  phon.h1$hypothesis),
+                       data.frame(Hypothesis = "Mean Pitch Effect?",
+                                  phon.h2$hypothesis),
+                       data.frame(Hypothesis = "Pitch Range Effect?",
+                                  phon.h3$hypothesis),
+                       data.frame(Hypothesis = "Speech Rate Effect?",
+                                  phon.h4$hypothesis)) %>% 
+  select(-Hypothesis.1)
+
+kable(df.phon.test)
+```
+
+#### What drives difference? 
+```{r}
+fit.zoib %>% 
+  emmeans(specs = pairwise ~ spk | gender_corr) %>% 
+  ggplot(aes(x = .value,
+             y = vowel)) + 
+  facet_wrap(~ contrast) +
+  geom_vline(xintercept = 0, 
+             linetype = 2) + 
+  labs(title = "Pairwise comparisons of /s/ condition by following vowel",
+       y = "vowel")
+ggsave(file="~/qp1_2spk/analysis/figures/emmeans.pdf", width=8,height=4)
+
+fit.zoib %>% 
+  emmeans(specs = pairwise ~ sib_code | gender_corr, lmerTest.limit = 29499) %>% 
+  pluck("contrasts") %>% 
+  summary() %>%
+  ggplot(aes(x = estimate,
+             y = gender_corr)) +
+  geom_errorbar(aes(xmin=estimate - (SE * qt((1-0.05)/2 + .5, df)), 
+                    xmax=estimate + (SE * qt((1-0.05)/2 + .5, df)),
+                    width = .3)) + 
+  geom_point(shape = 21,
+             color = "black",
+             fill = "lightblue") + 
+  geom_vline(xintercept = 0, 
+             linetype = 2) + 
+  facet_wrap(~ contrast)
+```
+
+```{r}
+emmeans(fit.lmer, 
+        pairwise ~ sib_code | vowel_class * spk, 
+        pbkrtest.limit = 9772) %>%
+  pluck("contrasts") %>%
+  as.data.frame() %>% 
+  ggplot(aes(x = estimate,
+             y = vowel_class, 
+             group = spk)) + 
+  geom_errorbar(aes(xmin=estimate - (SE * qt((1-0.05)/2 + .5, df)), 
+                    xmax=estimate + (SE * qt((1-0.05)/2 + .5, df)),
+                    width = .3)) + 
+  geom_point(shape = 21,
+             color = "black",
+             fill = "lightblue") + 
+  geom_vline(xintercept = 0, 
+             linetype = 2) + 
+  facet_grid(spk ~ contrast)
+```
+
+```{r}
+contrast(
+  emtrends(fit.lmer, ~ sib_code | spk, var = "f2_raw"),
+  method = "pairwise"
+)
+
+emmip(fit.lmer, sib_code ~ f2_raw | spk, cov.reduce = range) +
+  ggplot2::labs(x = "Vowel (continuous)", y = "Predicted response") +
+  ggplot2::theme_minimal()
+```
+
+```{r}
+# Create prediction grid
+df.no_control <- df.numeric %>% filter(sib_code != "control")
+df.no_control$sib_code <- factor(df.no_control$sib_code, 
+                              levels = c("backed", 
+                                         "mid", 
+                                         "fronted"))
+fit.lmer.mini <- lmer(response ~ f2_raw*spk*sib_code +
+                   (1 | workerid) + 
+                   (1 | triplet_id), 
+                 data = df.no_control,
+                 REML = F)
+
+temp.df <- expand.grid(
+  f2_raw = seq(min(df.no_control$f2_raw, na.rm = T), 
+               max(df.no_control$f2_raw, na.rm = T), 
+               length.out = 100),
+  sib_code = levels(df.no_control$sib_code),
+  spk = levels(df.no_control$spk),
+  workerid = NA) # exclude random effects (fixed effects only)
+
+temp.df$pred <- predict(fit.lmer.mini, newdata = temp.df, re.form = NA)
+
+# Plot
+ggplot(temp.df, aes(x = f2_raw, y = pred, group = spk, color = sib_code)) +
+  geom_line(size = .5) +
+  facet_wrap(~ spk) +
+  labs(x = "Raw F2", y = "Predicted Response") +
+  scale_x_continuous(trans = "reverse") + 
+  theme_minimal()
+
+ggplot(df.numeric,
+       aes(x = f2_raw,
+           y = response,
+           color = sib_code)) + 
+  #geom_point() + 
+  geom_smooth(method = "lm") + 
+  facet_grid(~ spk) + 
+  scale_x_continuous(trans = "reverse") + 
+  labs(title = "single token")
+```
+
+```{r}
+df.numeric %>% 
+  filter(sib_code != "control") %>%
+  ggplot(aes(x = f2_norm,
+             color = cog,
+             shape = sib_code,
+             y = response)) + 
+  geom_smooth(method = "lm",
+              color = "black",
+              alpha = 0.2,
+              se = T) +
+    stat_summary(fun = "mean",
+               geom = "point",
+               alpha = 0.75) + 
+  scale_color_gradient2(mid = "red",
+                       low = "blue",
+                       high = "yellow",
+                       limits = c(4000, 9500),
+                       midpoint = 7000) +
+  coord_cartesian(ylim = c(0, 1)) + 
+  scale_x_continuous(trans = "reverse") + 
+  #facet_wrap(~spk)
+  facet_grid(spk~sib_code)
+
+df.numeric %>% 
+  filter(sib_code != "control") %>%
+  group_by(spk, sib_code, f2_raw) %>%
+  summarise(
+    cog = mean(cog, na.rm = T),
+    response = mean(response, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(x = f2_raw,
+             y = cog,
+             shape = sib_code,
+             color = response)) + 
+  geom_point(alpha = 0.75) +
+  scale_color_gradient2(mid = "red",
+                        low = "blue",
+                        high = "yellow",
+                        limits = c(0, 1),
+                        midpoint = 0.5) +
+  coord_cartesian(ylim = c(4000, 9500)) + 
+  scale_x_continuous(trans = "reverse") + 
+  #facet_wrap(~spk)
+  facet_grid(spk~sib_code)
+```
+
+```{r}
+df.numeric %>% 
+  filter(sib_code != "control") %>%
+  ggplot(mapping = aes(x = sib_code,
+                     y = response)) + 
+  stat_summary(fun = "mean",
+               geom = "bar",
+               fill = "lightblue") + 
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "linerange") +
+  facet_grid(spk~vowel_class) +
+  scale_x_discrete(limits = c("backed", "mid", "fronted")) + 
+  labs(x = "/s/ Condition",
+       y = "Masculinity Rating", 
+       title = "Single token: masc rating by /s/ + vowel class")
+```
+
